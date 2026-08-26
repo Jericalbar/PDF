@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF Reader Web</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><span class="pdf-mark">PDF</span><span>PDF Reader Web</span></div>
+    <div class="window-buttons"><span>—</span><span>□</span><span>×</span></div>
+  </header>
+
+  <div class="menu-bar">
+    <button>File</button><button>Edit</button><button>View</button><button>Window</button><button>Help</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active">Home</button>
+    <button class="tab">Tools</button>
+    <div class="welcome-tab">Welcome<span>×</span></div>
+    <div class="tabs-spacer"></div>
+    <span class="help-circle">?</span>
+    <span class="signin">Sign In</span>
+  </div>
+
+  <div class="main-toolbar">
+    <div class="toolbar-group left-tools">
+      <button class="icon-tool" id="saveBtn"><span>▣</span><small>Save</small></button>
+      <button class="icon-tool" id="uploadBtn"><span>☁</span><small>Upload</small></button>
+      <button class="icon-tool" id="printBtn"><span>▤</span><small>Print</small></button>
+      <button class="icon-tool" id="emailBtn"><span>✉</span><small>Email</small></button>
+      <button class="icon-tool" id="searchBtn"><span>⌕</span><small>Search</small></button>
+    </div>
+    <div class="vline"></div>
+    <div class="page-controls">
+      <button id="prevBtn" class="nav-btn">‹<small>Previous</small></button>
+      <button id="nextBtn" class="nav-btn">›<small>Next</small></button>
+      <input id="pageInput" value="1"><span>/</span><span id="pageCount">0</span>
+    </div>
+    <div class="vline"></div>
+    <div class="zoom-controls">
+      <button id="zoomOut">−<small>Zoom Out</small></button>
+      <select id="zoomSelect"><option>100%</option><option>125%</option><option>150%</option><option>75%</option><option>50%</option></select>
+      <button id="zoomIn">＋<small>Zoom In</small></button>
+      <button id="fitBtn">⊞<small>Fit</small></button>
+      <button id="moreBtn" class="more">•••</button>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <button id="shareBtn" class="share">⇧ <b>Share</b></button>
+  </div>
+
+  <div class="content">
+    <aside class="left-rail">
+      <button class="rail active" data-panel="pagesPanel"><span>▤</span><label>Pages</label></button>
+      <button class="rail" data-panel="bookmarksPanel"><span>♧</span><label>Bookmarks</label></button>
+      <button class="rail" data-panel="attachmentsPanel"><span>⌕</span><label>Attachments</label></button>
+    </aside>
+
+    <aside class="page-panel" id="pagesPanel">
+      <div class="panel-title">Pages <button id="closePanel">×</button></div>
+      <div id="thumbnails" class="thumbs">
+        <div class="empty-pages"><div class="paper-icon">▤</div><b>No pages</b><span>Open a PDF to view pages.</span></div>
+      </div>
+    </aside>
+    <aside class="page-panel hidden" id="bookmarksPanel">
+      <div class="panel-title">Bookmarks <button>×</button></div>
+      <div class="empty-pages"><div class="paper-icon">♧</div><b>No bookmarks</b><span>Add bookmarks from the Tools panel.</span></div>
+    </aside>
+    <aside class="page-panel hidden" id="attachmentsPanel">
+      <div class="panel-title">Attachments <button>×</button></div>
+      <div class="empty-pages"><div class="paper-icon">⌕</div><b>No attachments</b><span>Attachments will appear here.</span></div>
+    </aside>
+
+    <main class="viewer">
+      <div id="welcome" class="welcome">
+        <div class="welcome-card">
+          <div class="big-pdf">PDF</div>
+          <h1>Open a PDF to get started</h1>
+          <p>View, edit, organize, sign and convert your PDF files in your browser.</p>
+          <button id="openBtn" class="open-main">Open PDF</button>
+        </div>
+      </div>
+      <div id="viewerScroll" class="viewer-scroll hidden">
+        <div id="pages"></div>
+      </div>
+      <div id="editHint" class="edit-hint hidden">Edit PDF mode: click existing text to edit. Double-click blank space to add text. Press Esc to exit.</div>
+    </main>
+
+    <aside class="tools-panel">
+      <input id="toolSearch" placeholder="Search tools">
+      <div class="tool-list">
+        <button class="tool-row" data-expand="exportMenu"><i class="teal">▧</i><span>Export PDF</span><b>⌄</b></button>
+        <div id="exportMenu" class="tool-menu hidden"><button id="toWord">PDF → Word</button><button id="toImage">PDF → Image</button><button id="toExcel">PDF → Excel</button></div>
+
+        <button class="tool-row" data-expand="createMenu"><i class="red">▧</i><span>Create PDF</span><b>⌄</b></button>
+        <div id="createMenu" class="tool-menu hidden"><button id="blankBtn">Blank PDF</button><button id="combineBtn">Combine Files</button></div>
+
+        <button class="tool-row" id="editBtn"><i class="pink">▤</i><span>Edit PDF</span><b></b></button>
+        <button class="tool-row" id="commentBtn"><i class="yellow">▤</i><span>Comment</span><b></b></button>
+
+        <button class="tool-row" id="combineTool"><i class="purple">⇄</i><span>Combine Files</span><b>⌄</b></button>
+        <button class="tool-row" id="organizeBtn"><i class="green">▤</i><span>Organize Pages</span><b>⌄</b></button>
+        <button class="tool-row" id="signBtn"><i class="magenta">✎</i><span>Fill &amp; Sign</span><b></b></button>
+        <button class="tool-row" id="redactBtn"><i class="pink">▰</i><span>Redact</span><b></b></button>
+      </div>
+      <div class="pro-box">
+        <b>Convert and edit PDFs</b>
+        <b>with PDF Reader Web Pro</b>
+        <button id="proBtn">Start Free Trial</button>
+      </div>
+    </aside>
+  </div>
+
+  <footer><span id="status">Ready</span><span id="filename">No document</span></footer>
+</div>
+
+<input id="pdfInput" type="file" accept="application/pdf" hidden>
+<input id="multiInput" type="file" accept="application/pdf" multiple hidden>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
