@@ -1,0 +1,912 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IT Department Portal</title>
+<style>
+:root{--bg:#f2f5f4;--card:#fff;--text:#16222c;--muted:#66747f;--line:#dde4e2;--ink:#12202b;--ink-t:#c9d6db;--pri:#0f6f6a;--pri-t:#fff;--co:#12202b;--ok:#15803d;--bad:#c2332f;--warn:#ea6a0a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d151b;--card:#15212a;--text:#e4ecef;--muted:#8799a4;--line:#24333d;--ink:#091016;--pri:#2bb3a7;--pri-t:#06201e}}
+:root[data-theme="dark"]{--bg:#0d151b;--card:#15212a;--text:#e4ecef;--muted:#8799a4;--line:#24333d;--ink:#091016;--pri:#2bb3a7;--pri-t:#06201e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+.hidden{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+input:focus,select:focus,textarea:focus{border-color:var(--pri);outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--pri) 22%,transparent)}
+label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 5px;font-weight:500}
+.btn{background:var(--pri);color:var(--pri-t);border:0;padding:9px 15px;border-radius:8px;cursor:pointer;font-weight:600;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--bg);filter:none}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.btn.danger{background:var(--bad);color:#fff}
+#login{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.lbrand{background:var(--ink);color:var(--ink-t);padding:48px;display:flex;flex-direction:column;justify-content:space-between}
+.lbrand h2{margin:0;font-size:34px;line-height:1.15;color:#fff;font-weight:600;max-width:12ch}
+.lbrand p{margin:14px 0 0;max-width:34ch;color:var(--ink-t)}
+.lco{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.lco li{display:flex;align-items:center;gap:12px;font-weight:500;color:#fff}
+.lco i{width:26px;height:6px;border-radius:3px;display:block}
+.lform{display:grid;place-items:center;padding:28px}
+.login-card{width:100%;max-width:360px}
+.login-card h1{margin:0 0 4px;font-size:24px;font-weight:600}
+.sub{color:var(--muted);margin:0 0 10px}
+.row{display:flex;justify-content:space-between;align-items:center;margin:14px 0}
+.row label{margin:0;display:flex;gap:7px;align-items:center;color:var(--text);font-size:13px}
+.row input[type=checkbox]{width:auto}
+a.lnk{color:var(--pri);cursor:pointer;font-size:13px;text-decoration:none}
+a.lnk:hover{text-decoration:underline}
+.err{color:var(--bad);font-size:12.5px;min-height:18px}
+#app{display:flex;min-height:100vh}
+aside{width:232px;background:var(--ink);padding:18px 12px;display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 20px;color:#fff;font-weight:600;line-height:1.2}
+.brand b{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--pri);color:var(--pri-t);font-size:15px}
+.nav{display:flex;align-items:center;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--ink-t);font-weight:500}
+.nav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-right:11px;flex-shrink:0}
+.nav:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 3px 0 0 var(--co)}
+.spacer{flex:1}
+main{flex:1;min-width:0;padding:26px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid var(--co)}
+.top h1{margin:0;font-size:22px;font-weight:600}
+.cosel{display:flex;align-items:center;gap:9px;margin:0;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:0 6px 0 14px}
+.cosel i{width:10px;height:10px;border-radius:50%;background:var(--co);flex-shrink:0}
+.cosel select{border:0;background:transparent;width:auto;min-width:170px;font-weight:500;box-shadow:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat{padding:16px 18px;border-left:4px solid var(--co)}
+.stat b{display:block;font-size:28px;font-weight:600;line-height:1.2}
+.stat span{color:var(--muted);font-size:13px}
+button.stat{font:inherit;color:inherit}
+button.stat:hover{border-color:var(--co)}
+.wrap{overflow:auto;max-height:72vh;border-radius:6px}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;color:var(--muted);font-weight:600}
+tbody tr:hover td{background:color-mix(in srgb,var(--bg) 70%,transparent)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600;background:var(--bg);border:1px solid var(--line)}
+.pill.Active,.pill.Resolved,.pill.Available{color:var(--ok)}
+.pill.Down,.pill.High,.pill.Open{color:var(--bad)}
+.pill.Suspended,.pill.Medium,.pill.In-Progress,.pill.Low{color:var(--warn)}
+.modal{position:fixed;inset:0;background:rgba(6,14,20,.55);display:grid;place-items:center;padding:16px;z-index:10}
+.modal .card{width:100%;max-width:440px;max-height:90vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.modal h3{margin:0 0 4px;font-size:18px}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;z-index:20}
+.muted{color:var(--muted)}
+.crow{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}.crow span{width:110px}.crow code{flex:1;min-width:120px;word-break:break-all;background:var(--bg);padding:4px 8px;border-radius:6px}
+td.dt{max-width:320px;overflow:hidden;text-overflow:ellipsis}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{border:1px solid var(--line);background:var(--card);padding:6px 13px;border-radius:99px;cursor:pointer;font-size:13px;font-weight:500}
+.tab:hover{border-color:var(--co)}
+.tab.on{background:var(--co);color:#fff;border-color:var(--co)}
+.cap{font-weight:600;margin-bottom:10px;padding-left:10px;border-left:4px solid var(--co);line-height:1.2}
+table.sh{min-width:0;font-size:13px}
+table.sh td,table.sh th{white-space:pre-line;min-width:84px;max-width:340px;vertical-align:top;padding:7px 10px;border:1px solid var(--line);overflow-wrap:anywhere}
+table.sh tr.hd td{font-weight:600;background:var(--bg);position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
+table.sh tr.sec td{font-weight:600;color:var(--text);background:var(--bg);border:0;border-left:4px solid var(--co);padding:8px 10px}
+table.sh tr.bl td{height:8px;padding:0;border:0}
+table.sh td.ra{min-width:0;white-space:nowrap;border:0;background:transparent}
+table.sh td.mask{cursor:pointer;color:var(--muted);letter-spacing:2px}
+table.sh td[contenteditable]:focus{outline:2px solid var(--pri);outline-offset:-2px;background:var(--card)}
+.gs{position:relative;flex:1;min-width:200px;max-width:380px}
+.gsr{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 34px rgba(0,0,0,.2);z-index:15;max-height:380px;overflow:auto;margin-top:6px}
+.gsi{display:flex;gap:10px;padding:9px 12px;cursor:pointer;align-items:flex-start;font-size:13px}.gsi:hover{background:var(--bg)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.toolbar select,.toolbar input{width:auto}
+.ss{width:auto;padding:4px 8px;font-size:12.5px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-bottom:16px}
+.att{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}.att:last-child{border:0}
+.dotb{width:8px;height:8px;border-radius:50%;background:var(--bad);margin-top:7px;flex-shrink:0}
+.corow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-left:4px solid var(--co2);border-radius:6px;cursor:pointer;margin-bottom:6px;background:var(--bg);flex-wrap:wrap}
+.corow:hover{box-shadow:inset 0 0 0 1px var(--co2)}.corow span{color:var(--muted);font-size:13px}
+h3.sec{margin:0 0 10px;font-size:15px;font-weight:600}
+.sw{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.swb{width:32px;height:32px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}.swb.on{box-shadow:0 0 0 2px var(--text)}
+.bar{height:8px;border-radius:4px;background:var(--pri);min-width:2px}.brow{display:grid;grid-template-columns:70px 1fr 30px;gap:10px;align-items:center;margin:8px 0}
+@media print{aside,.gs,.cosel,.toolbar,.noprint,.toast{display:none!important}main{padding:0}body{background:#fff;color:#000}.card{break-inside:avoid;box-shadow:none}.wrap{max-height:none;overflow:visible}}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}.bcol{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:120px}.bcol h4{margin:0 0 10px;font-size:13px;display:flex;justify-content:space-between;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.tcard{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:10px;cursor:pointer}.tcard:hover{border-color:var(--pri)}.tcard .ov{color:var(--bad);font-weight:600}.tcard .mt{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.sres{border:1px solid var(--line);border-radius:8px;margin-top:4px;max-height:140px;overflow:auto}.sres div{padding:7px 10px;cursor:pointer}.sres div:hover{background:var(--bg)}
+@media(max-width:820px){.board{grid-template-columns:1fr}}
+.staff aside .nav:not([data-p="ticket"]):not(#logout),.staff .gs,.staff .cosel{display:none!important}.standalone.shared #logout{display:flex}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:8px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;padding:14px;border:1px solid var(--line);border-left:4px solid var(--co);border-radius:12px;background:var(--card);cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .12s}.tile:hover{border-color:var(--co);transform:translateY(-2px)}.tile b{font-weight:600}.ti{font-size:28px;line-height:1.1;margin-bottom:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;min-width:0}.rcard:hover{border-color:var(--co);box-shadow:0 2px 10px rgba(0,0,0,.08)}.rcard>b{display:block;overflow-wrap:anywhere}
+.chips{margin-top:8px}.chips span{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chips em{font-style:normal;color:var(--text);margin-right:6px;font-weight:500}
+.kv{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line)}.kv .v{white-space:pre-wrap;overflow-wrap:anywhere}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg button{border:0;background:var(--card);padding:7px 13px;cursor:pointer}.seg button.on{background:var(--co);color:#fff}
+.crumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.crumb b{font-size:17px}
+h3.grp{margin:20px 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.alert{background:color-mix(in srgb,var(--bad) 12%,var(--card));border:1px solid var(--bad);border-left-width:6px;border-radius:10px;padding:11px 15px;margin-bottom:14px}
+tr.rdown td{background:color-mix(in srgb,var(--bad) 13%,transparent)}tr.rdown td:first-child{box-shadow:inset 5px 0 0 var(--bad)}
+tr.rint td{background:color-mix(in srgb,var(--warn) 14%,transparent)}tr.rint td:first-child{box-shadow:inset 5px 0 0 var(--warn)}
+tr.rok td:first-child{box-shadow:inset 5px 0 0 var(--ok)}
+select.st-Active{color:var(--ok);border-color:var(--ok);font-weight:600}select.st-Down{color:var(--bad);border-color:var(--bad);font-weight:600}select.st-Intermittent{color:var(--warn);border-color:var(--warn);font-weight:600}.pill.Intermittent{color:var(--warn)}
+.alert.warnbox{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,var(--card))}
+.spark{display:inline-flex;align-items:flex-end;gap:1px;vertical-align:middle}.spark i{display:block;width:4px;height:14px;border-radius:1px}.spark i.ok{background:var(--ok)}.spark i.bad{background:var(--bad)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:baseline;background:var(--muted)}.dot.up{background:var(--ok)}.dot.down{background:var(--bad)}.dot.intermittent{background:var(--warn)}
+@media(max-width:820px){.two{grid-template-columns:1fr}.gs{max-width:none;order:3;flex-basis:100%}}
+@media(max-width:820px){#login{grid-template-columns:1fr}.lbrand{display:none}#app{flex-direction:column}aside{width:100%;flex-direction:row;overflow-x:auto;padding:10px}.brand{padding:0 8px 0 4px}.spacer{display:none}.nav{width:auto;white-space:nowrap}.nav.active{box-shadow:inset 0 -3px 0 var(--co)}main{padding:18px 14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="lbrand">
+    <div class="brand"><b>IT</b><span>Department<br>Portal</span></div>
+    <div><h2>Tickets, inventory and ISPs in one place</h2><p>For the IT team of the TTC group of companies.</p></div>
+    <ul class="lco"><li><i style="background:#2f9e5b"></i>Akian</li><li><i style="background:#2563c9"></i>Supima Holdings Inc</li><li><i style="background:#d98a1d"></i>Tosen</li><li><i style="background:#7a4fc4"></i>Bicutan</li><li><i style="background:#c8403f"></i>Century</li></ul>
+  </div>
+  <div class="lform"><div class="login-card">
+    <h1>Sign in</h1>
+    <p class="sub">Use the username and password given by the IT department.</p>
+    <label>Username</label><input id="lu" autocomplete="username">
+    <label>Password</label><input id="lp" type="password" autocomplete="current-password">
+    <div class="row">
+      <label><input type="checkbox" id="lr"> Remember me</label>
+      <a class="lnk" id="forgot">Forgot password?</a>
+    </div>
+    <div class="err" id="lerr"></div>
+    <button class="btn" style="width:100%" id="lbtn">Sign in</button>
+    <p class="muted" style="font-size:12px;margin:16px 0 0">No account yet? Ask the IT manager to create one for you.</p>
+  </div></div>
+</section>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <aside>
+    <div class="brand"><b>IT</b><span>Department<br>Portal</span></div>
+    <button class="nav" data-p="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</button>
+    <button class="nav" data-p="tasks"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/></svg>Tasks</button>
+    <button class="nav" data-p="ticket"><svg viewBox="0 0 24 24"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/></svg>Create Ticket<span id="tkbadge" class="pill" style="margin-left:auto;display:none"></span></button>
+    <button class="nav" data-p="inventory"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>Inventory</button>
+    <button class="nav" data-p="isp"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>ISP<span id="ispbadge" class="pill" style="margin-left:auto;display:none;color:var(--bad)"></span></button>
+    <button class="nav" data-p="reports"><svg viewBox="0 0 24 24"><path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/></svg>Monthly Report</button>
+    <button class="nav" data-p="monitor"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Monitoring<span id="monbadge" class="pill" style="margin-left:auto;display:none;color:var(--bad)"></span></button>
+    <button class="nav" data-p="settings"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Settings</button>
+    <div class="spacer"></div>
+    <div id="who" onclick="pwForm()" title="Change password" style="padding:4px 12px 8px;font-size:12.5px;color:var(--ink-t);opacity:.85;cursor:pointer"></div>
+    <button class="nav" id="logout"><svg viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>Logout</button>
+  </aside>
+  <main>
+    <div class="top">
+      <h1 id="title"></h1>
+      <div class="gs"><input id="gs" placeholder="Search everything... (press /)" autocomplete="off"><div id="gsr" class="gsr hidden"></div></div>
+      <label class="cosel"><i id="codot"></i><select class="filter" id="company"></select></label>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden"></div>
+
+<script>
+/* Standalone mode: talks to the IT Portal server (login, roles, shared database) */
+(function(){
+  document.body.classList.add("standalone");
+  const subs=[];
+  const api=async(m,u,b)=>{const r=await fetch(u,{method:m,headers:b?{"Content-Type":"application/json"}:{},body:b?JSON.stringify(b):undefined,credentials:"same-origin"});if(r.status===401){location.reload();throw new Error("401")}if(!r.ok){const e=new Error("HTTP "+r.status);e.status=r.status;throw e}return r.json()};
+  const poke=()=>setTimeout(()=>subs.forEach(f=>f()),150);
+  const col=name=>({
+    where(){return this},
+    onSnapshot(cb,err){let stop=false,t,ver=null,first=true;
+      const tick=async(manual)=>{if(stop)return;clearTimeout(t);
+        try{const r=await fetch("/api/c/"+name,{headers:ver?{"If-None-Match":ver}:{},credentials:"same-origin"});
+          if(r.status===200){ver=r.headers.get("ETag");const d=await r.json();first=false;cb({docs:d.map(x=>({id:x.id,data:()=>x.data}))})}
+          else if(r.status===401){location.reload();return}
+          else if(r.status>=400&&first&&err){first=false;err(new Error("HTTP "+r.status))}
+        }catch(e){}
+        t=setTimeout(tick,3000)};
+      subs.push(tick);tick();return()=>{stop=true;clearTimeout(t)}},
+    doc:id=>({set:async x=>{await api("PUT","/api/c/"+name+"/"+encodeURIComponent(id),x);poke()},delete:async()=>{await api("DELETE","/api/c/"+name+"/"+encodeURIComponent(id));poke()}})
+  });
+  const dl={save:async({filename,data})=>{const b=new Blob([data],{type:"text/plain"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return{saved:true}}};
+  const user={me:()=>api("GET","/api/me"),can:async()=>true,profiles:ids=>api("GET","/api/people?ids="+encodeURIComponent(ids.join(","))),search:q=>api("GET","/api/people?q="+encodeURIComponent(q))};
+  window.claude={use:async n=>n==="db"?{collection:col}:n==="user"?user:n==="downloads"?dl:null};
+})();
+</script>
+<script>
+const COMPANIES=["Akian","Supima Holdings Inc","Tosen","Bicutan","Century","Cencon","Wynsum","Tiong Se Academy","Cebu","Iloilo","Zamboanga","Bacolod"];
+const BLOCKS=[];
+const TITLES={dashboard:"Dashboard",ticket:"Create Ticket",inventory:"Inventory",isp:"ISP",tasks:"Tasks",monitor:"Network Monitoring",reports:"Monthly Report",settings:"Settings"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cls=s=>String(s).replace(/\s+/g,"-");
+
+/* storage (safe) */
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const seed={
+  isps:[
+    {id:1,company:"Akian",name:"PLDT Fibr",accNo:"1002345678",accName:"Akian Corp",status:"Active"},
+    {id:2,company:"Supima Holdings Inc",name:"Globe Business",accNo:"2209981234",accName:"Supima Holdings Inc",status:"Active"},
+    {id:3,company:"Tosen",name:"Converge",accNo:"5501122334",accName:"Tosen Inc",status:"Down"}
+  ],
+  tickets:[
+    {id:1001,company:"Akian",title:"Printer not working",priority:"Medium",status:"Open",by:"Reception",date:"2026-10-08"},
+    {id:1002,company:"Century",title:"Cannot connect to VPN",priority:"High",status:"In Progress",by:"Accounting",date:"2026-10-09"}
+  ],
+  cats:[],
+  inventory:[]
+};
+let db={isps:store.get("itd_isps",seed.isps),tickets:store.get("itd_tickets",seed.tickets),inventory:store.get("itd_inv3",seed.inventory),cats:store.get("itd_cats3",seed.cats)};
+const save=()=>{store.set("itd_isps",db.isps);store.set("itd_tickets",db.tickets);store.set("itd_inv3",db.inventory);store.set("itd_cats3",db.cats)};
+let blocks=store.get("itd_blocks2",[]),DOCOF={};const bTimers={};
+function saveBlocks(b){
+  if(!DBH){store.set("itd_blocks2",blocks);return}
+  if(!b)return;const key=b.company+"|"+b.cat;clearTimeout(bTimers[key]);
+  bTimers[key]=setTimeout(async()=>{try{const id=DOCOF[key]||(DOCOF[key]="i"+Date.now().toString(36));
+    await DBH.collection("inventory").doc(id).set({company:b.company,cat:b.cat,blocks:blocks.filter(x=>x.company===b.company&&x.cat===b.cat).map(({company,cat,...r})=>r)})}catch(e){toast("Could not save: no permission")}},400)}
+let page="dashboard",co="All";
+const nextId=a=>a.reduce((m,x)=>Math.max(m,x.id),0)+1;
+const inCo=a=>co==="All"?a:a.filter(x=>x.company===co);
+const coOpts=(sel,all)=>(all?'<option value="All">All Companies</option>':'')+COMPANIES.map(c=>`<option ${c===sel?"selected":""}>${esc(c)}</option>`).join("");
+
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+function modal(html){const m=$("#modal");m.innerHTML=`<div class="card">${html}</div>`;m.classList.remove("hidden")}
+function closeModal(){$("#modal").classList.add("hidden")}
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+
+/* LOGIN */
+function enter(user){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");store.set("itd_user",user);go("dashboard")}
+$("#lbtn").onclick=async()=>{const u=$("#lu").value.trim(),p=$("#lp").value;if(!u||!p){$("#lerr").textContent="Enter username and password.";return}$("#lerr").textContent="";
+  try{const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p,remember:$("#lr").checked})});if(r.ok)location.reload();else{const d=await r.json().catch(()=>({}));$("#lerr").textContent=d.error||"Login failed."}}catch(e){$("#lerr").textContent="Cannot reach the server."}};
+["lu","lp"].forEach(id=>$("#"+id).addEventListener("keydown",e=>{if(e.key==="Enter")$("#lbtn").click()}));
+$("#forgot").onclick=()=>modal(`<h3>Forgot password</h3><p class="muted">Please ask the IT manager to reset your password. They can do it in Settings, under User accounts.</p><div class="actions"><button class="btn" onclick="closeModal()">OK</button></div>`);
+document.addEventListener("click",e=>{
+  if(e.target.id==="fsend"){
+    const v=$("#fe").value.trim();
+    if(!/^\S+@\S+\.\S+$/.test(v)){$("#ferr").textContent="Enter a valid email.";return}
+    closeModal();toast("Reset link sent to "+v+" (demo)");
+  }
+});
+$("#logout").onclick=async()=>{try{await fetch("/api/logout",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"})}catch(e){}location.reload()};
+
+/* NAV */
+document.querySelectorAll(".nav[data-p]").forEach(b=>b.onclick=()=>go(b.dataset.p));
+$("#company").innerHTML=coOpts("All",true);
+$("#company").onchange=e=>{co=e.target.value;invCat=0;render()};
+function go(p){if(ME.staff)p="ticket";page=p;document.querySelectorAll(".nav[data-p]").forEach(b=>b.classList.toggle("active",b.dataset.p===p));$("#title").textContent=ME.staff?"My tickets":TITLES[p];render()}
+const CCOL={"Akian":"#2f9e5b","Supima Holdings Inc":"#2563c9","Tosen":"#d98a1d","Bicutan":"#7a4fc4","Century":"#c8403f","Cencon":"#0e8a8a","Wynsum":"#0e7490","Tiong Se Academy":"#be185d","Cebu":"#4d7c0f","Iloilo":"#9333ea","Zamboanga":"#0369a1","Bacolod":"#b45309"};
+function updateBadge(){const b=$("#tkbadge"),i=$("#ispbadge");if(b){const n=ME.staff?0:db.tickets.filter(t=>t.status==="Open"&&!t.assigned).length;b.style.display=n?"":"none";b.textContent=n;b.title=n+" unassigned open ticket(s)"}if(i){const n=ME.staff?0:db.isps.filter(x=>x.status==="Down"||x.status==="Intermittent").length;i.style.display=n?"":"none";i.textContent=n;i.title=n+" ISP with a problem (disconnected or intermittent)"}}
+function render(){updateBadge();document.documentElement.style.setProperty("--co",CCOL[co]||"#12202b");$("#codot").style.background=CCOL[co]||"#12202b";({dashboard,tasks:tasksPage,ticket,inventory,isp,monitor:monitorPage,reports,settings})[page]()}
+
+/* HELPERS */
+const csvEsc=v=>{v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+async function saveFile(name,data){try{if(typeof claude==="undefined"){toast("Download is not available here");return}const d=await claude.use("downloads");if(!d){toast("Download is not available here");return}await d.save({filename:name,data});}catch(e){if(!e||e.code!=="declined")toast("Could not save the file")}}
+const toCsv=rows=>rows.map(r=>r.map(csvEsc).join(",")).join("\n");
+function copyTxt(v){try{navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>fbCopy(v))}catch(e){fbCopy(v)}}
+function fbCopy(v){const t=document.createElement("textarea");t.value=v;document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand("copy")}catch(e){}t.remove();toast(ok?"Copied":"Copy not allowed here")}
+const today=()=>new Date().toISOString().slice(0,10);
+/* CHARTS */
+function colChart(labels,series,colors,names){
+  const W=520,H=190,pl=30,pb=26,pt=10,mx=Math.max(1,...series.flat()),n=labels.length,gw=(W-pl)/n,bw=Math.min(24,gw*0.72/series.length);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(names.join(" / "))}">`;
+  for(let k=0;k<=2;k++){const y=pt+(H-pt-pb)*(1-k/2);s+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${pl-6}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--muted)">${Math.round(mx*k/2)}</text>`}
+  labels.forEach((l,i)=>{const x0=pl+i*gw+(gw-bw*series.length)/2;series.forEach((a,j)=>{const v=a[i],hh=(H-pt-pb)*v/mx;s+=`<rect x="${x0+j*bw}" y="${H-pb-hh}" width="${Math.max(2,bw-2)}" height="${hh}" rx="2" fill="${colors[j]}"><title>${esc(names[j])} ${esc(l)}: ${v}</title></rect>`});s+=`<text x="${pl+i*gw+gw/2}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${l}</text>`});
+  const lg=names.length>1?`<div style="display:flex;gap:14px;margin-top:6px;font-size:12.5px">${names.map((x,j)=>`<span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${colors[j]};margin-right:6px"></i>${esc(x)}</span>`).join("")}</div>`:"";
+  return s+"</svg>"+lg}
+function donut(parts,unit){
+  const tot=parts.reduce((a,p)=>a+p[1],0),R=52,C=2*Math.PI*R;let off=0,s='<svg viewBox="0 0 120 120" width="140" height="140" role="img">';
+  if(!tot)s+=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--line)" stroke-width="16"/>`;
+  parts.forEach(p=>{const len=C*p[1]/tot;if(len>0)s+=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="${p[2]}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"><title>${esc(p[0])}: ${p[1]}</title></circle>`;off+=len});
+  s+=`<text x="60" y="58" text-anchor="middle" font-size="22" font-weight="600" fill="var(--text)">${tot}</text><text x="60" y="74" text-anchor="middle" font-size="10" fill="var(--muted)">${unit}</text></svg>`;
+  return `<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${s}<div>${parts.map(p=>`<div style="margin:5px 0"><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p[2]};margin-right:8px"></i>${esc(p[0])} <b>${p[1]}</b></div>`).join("")}</div></div>`}
+function hbars(items){const mx=Math.max(1,...items.map(i=>i[1]));return items.map(([l,v,c])=>`<div class="brow" style="grid-template-columns:140px 1fr 48px"><span title="${esc(l)}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l)}</span><div><div class="bar" style="width:${v/mx*100}%;background:${c||"var(--pri)"}"></div></div><b>${v}</b></div>`).join("")||'<p class="muted" style="margin:0">No data.</p>'}
+function trend(){const d=new Date(),ms=[];for(let i=5;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1);ms.push(x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0"))}
+  const tk=inCo(db.tickets);return{labels:ms.map(m=>new Date(m+"-01T00:00:00").toLocaleString("en",{month:"short"})),c:ms.map(m=>tk.filter(t=>(t.date||"").slice(0,7)===m).length),r:ms.map(m=>tk.filter(t=>(t.resolved||"").slice(0,7)===m).length)}}
+function statusParts(){const tk=inCo(db.tickets),n=s=>tk.filter(t=>t.status===s).length;return[["Open",n("Open"),"var(--bad)"],["In Progress",n("In Progress"),"var(--warn)"],["Resolved",n("Resolved"),"var(--ok)"]]}
+function invBars(){return co==="All"?COMPANIES.map(c=>[c,blocks.filter(b=>b.company===c).reduce((s,b)=>s+rowN(b),0),CCOL[c]]):catsOf(co).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).slice(0,10).map(x=>[x[0],x[1],CCOL[co]])}
+function dailyChart(){const[y,m]=rpM.split("-").map(Number),n=new Date(y,m,0).getDate(),tk=inCo(db.tickets),lab=[],cr=[];for(let d=1;d<=n;d++){const k=rpM+"-"+String(d).padStart(2,"0");lab.push(d===1||d%5===0?String(d):"");cr.push(tk.filter(t=>t.date===k).length)}return colChart(lab,[cr],["var(--pri)"],["Tickets created"])}
+/* DASHBOARD */
+function dashboard(){
+  const t=inCo(db.tickets),i=inCo(db.isps),open=t.filter(x=>x.status!=="Resolved"),hi=open.filter(x=>x.priority==="High"),bad=i.filter(x=>x.status!=="Active");
+  const att=[...open.filter(x=>!x.assigned).map(x=>({txt:`Unassigned ticket #${x.no||x.id}: ${x.title} (${x.company})`,go:"ticket",c:x.company})),...open.filter(x=>x.assigned&&ageD(x)>=3).map(x=>({txt:`Open for ${ageD(x)} days: #${x.no||x.id} ${x.title} (${x.company})`,go:"ticket",c:x.company})),...tasks.filter(x=>isOver(x)&&(co==="All"||x.company===co||x.company==="All")).map(x=>({txt:`Overdue task: ${x.title} (${nameOf(x)}, due ${x.due})`,go:"tasks",c:x.company})),...bad.map(x=>({txt:`${x.name} (${x.company}) ${x.status==="Intermittent"?"has an intermittent connection":"is disconnected"}`,go:"isp",c:x.company})),...hi.map(x=>({txt:`High priority #${x.no||x.id}: ${x.title} (${x.company})`,go:"ticket",c:x.company}))];
+  const st=(n,l,g)=>`<div class="card stat" style="cursor:pointer" onclick="go('${g}')"><b>${n}</b><span>${l}</span></div>`;
+  $("#view").innerHTML=`${downBanner()}<div class="toolbar"><button class="btn" onclick="tkForm()">+ New ticket</button><button class="btn ghost" onclick="go('inventory')">Open inventory</button><button class="btn ghost" onclick="go('isp');ispForm()">+ Add ISP</button></div>
+  <div class="grid">${st(open.length,"Open tickets","ticket")}${st(hi.length,"High priority","ticket")}${st(invCount(),"Inventory rows","inventory")}${st(i.filter(x=>x.status==="Active").length+"/"+i.length,"ISP working","isp")}${st(tasks.filter(x=>x.status!=="Done"&&(!ME.id||!DBH||isMine(x))).length,DBH&&ME.id?"My open tasks":"Open tasks","tasks")}</div>
+  <div class="two"><div class="card"><h3 class="sec">Tickets, last 6 months</h3>${(()=>{const t=trend();return colChart(t.labels,[t.c,t.r],["var(--pri)","var(--ok)"],["Created","Resolved"])})()}</div><div class="card"><h3 class="sec">Ticket status</h3>${donut(statusParts(),"tickets")}</div></div>
+  <div class="card" style="margin-bottom:16px"><h3 class="sec">${co==="All"?"Inventory rows by company":"Inventory rows by category"}</h3>${hbars(invBars())}</div>
+  <div class="two"><div class="card"><h3 class="sec">Needs attention</h3>${att.length?att.slice(0,8).map(a=>`<div class="att" onclick="pickCoName('${a.c.replace(/'/g,"")}','${a.go}')"><i class="dotb"></i><div>${esc(a.txt)}</div></div>`).join(""):'<p class="muted" style="margin:0">All clear. No ISP issues or high priority tickets.</p>'}</div>
+  <div class="card"><h3 class="sec">Companies</h3>${COMPANIES.map((c,k)=>{const tk=db.tickets.filter(x=>x.company===c&&x.status!=="Resolved").length,ip=db.isps.filter(x=>x.company===c),ac=ip.filter(x=>x.status==="Active").length,n=blocks.filter(b=>b.company===c).reduce((s,b)=>s+rowN(b),0);return `<div class="corow" style="--co2:${CCOL[c]}" onclick="pickCo(${k})"><b>${esc(c)}</b><span>${tk} open &middot; ISP ${ac}/${ip.length} &middot; ${n} inventory rows</span></div>`}).join("")}</div></div>
+  <div class="card"><h3 class="sec">Recent tickets</h3><div class="wrap">${ticketTable(t.slice().reverse().slice(0,6),false)}</div></div>`;
+}
+function pickCoName(c,g){co=COMPANIES.includes(c)?c:"All";$("#company").value=co;go(g)}
+/* TICKETS */
+let tkS="Active",tkP="All",tkQ="";
+const TCATS=["Network / Internet","Hardware","Software / Apps","Account / Access","CCTV","Printer","Other"];
+const ageD=t=>t.status==="Resolved"||!t.date?0:Math.max(0,Math.floor((Date.now()-new Date(t.date+"T00:00:00"))/864e5));
+let tkC="All";
+function ticketTable(rows,full){
+  if(!rows.length)return'<p class="muted">No tickets match.</p>';
+  return`<table><tr><th>#</th><th>Company</th><th>Category</th><th>Title</th><th>Priority</th><th>Status</th><th>Requested by</th><th>Assigned to</th><th>Opened</th>${full?"<th></th>":""}</tr>`+
+  rows.map(t=>{const a=ageD(t);return `<tr><td>${esc(t.no||t.id)}</td><td>${esc(t.company)}</td><td>${esc(t.category||"-")}</td><td style="white-space:normal;min-width:180px">${full?`<a class="lnk" onclick="tkOpen('${t.id}')">${esc(t.title)}</a>`:esc(t.title)}${t.desc?`<div class="muted">${esc(t.desc)}</div>`:""}</td><td><span class="pill ${cls(t.priority)}">${t.priority}</span></td><td>${full?`<select class="ss" onchange="tkStatus('${t.id}',this.value)">${["Open","In Progress","Resolved"].map(s=>`<option ${s===t.status?"selected":""}>${s}</option>`).join("")}</select>`:`<span class="pill ${cls(t.status)}">${t.status}</span>`}</td><td>${esc(t.by)}</td><td>${esc(t.assigned||"-")}</td><td>${t.date}${a>=3?` <span class="pill High" title="Open for ${a} days">${a}d</span>`:""}</td>${full?`<td style="white-space:nowrap"><a class="lnk" onclick="tkOpen('${t.id}')">Details</a> &nbsp; <a class="lnk" onclick="tkDel('${t.id}')">Delete</a></td>`:""}</tr>`}).join("")+"</table>";
+}
+function tkOpen(id){const t=byId(db.tickets,id);if(!t)return;
+  modal(`<h3>${esc(t.title)}</h3><p class="muted" style="margin:0 0 8px">#${esc(t.no||t.id)} &middot; ${esc(t.company)} &middot; ${esc(t.category||"Other")} &middot; <span class="pill ${cls(t.priority)}">${t.priority}</span> &middot; from ${esc(t.by)} on ${t.date}</p>${t.desc?`<p style="white-space:pre-wrap">${esc(t.desc)}</p>`:""}
+  <label>Status</label><select id="tos2">${["Open","In Progress","Resolved"].map(s=>`<option ${s===t.status?"selected":""}>${s}</option>`).join("")}</select>
+  <label>Assigned to</label><input id="toa" list="teamdl" value="${esc(t.assigned||"")}" placeholder="Name of IT staff"><datalist id="teamdl">${TEAM.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
+  <label>Note for the requester (update or resolution)</label><textarea id="ton2" rows="3">${esc(t.itNote||"")}</textarea>
+  <div class="actions"><button class="btn ghost" style="color:var(--bad)" onclick="closeModal();tkDel('${t.id}')">Delete</button><button class="btn ghost" onclick="closeModal()">Close</button><button class="btn" onclick="tkSaveDetail('${t.id}')">Save</button></div>`)}
+async function tkSaveDetail(id){const t={...byId(db.tickets,id)},v=$("#tos2").value;t.assigned=$("#toa").value.trim();t.itNote=$("#ton2").value.trim();if(!t.assigned)delete t.assigned;if(!t.itNote)delete t.itNote;
+  if(v==="Resolved"&&t.status!=="Resolved"){t.resolved=today();t.resolvedBy=ME.name||""}else if(v!=="Resolved"){delete t.resolved;delete t.resolvedBy}
+  t.status=v;closeModal();await dPut("tickets",t);toast("Ticket updated")}
+function tkRows(){const q=tkQ.toLowerCase();return inCo(db.tickets).filter(t=>(tkS==="All"||(tkS==="Active"?t.status!=="Resolved":t.status===tkS))&&(tkP==="All"||t.priority===tkP)&&(tkC==="All"||t.category===tkC)&&(!q||[t.title,t.desc,t.by,t.assigned,t.company].join(" ").toLowerCase().includes(q))).slice().reverse()}
+function staffTickets(){
+  $("#view").innerHTML=`<div class="toolbar"><button class="btn" onclick="tkForm()">+ New ticket</button></div><div class="card"><div class="wrap">${db.tickets.length?`<table><tr><th>#</th><th>Company</th><th>Category</th><th>Title</th><th>Priority</th><th>Status</th><th>Assigned to</th><th>Note from IT</th><th>Date</th></tr>${db.tickets.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||"")).map(t=>`<tr><td>${esc(t.no||t.id)}</td><td>${esc(t.company)}</td><td>${esc(t.category||"-")}</td><td style="white-space:normal;min-width:160px">${esc(t.title)}</td><td><span class="pill ${cls(t.priority)}">${t.priority}</span></td><td><span class="pill ${cls(t.status)}">${t.status}</span></td><td>${esc(t.assigned||"-")}</td><td style="white-space:normal;min-width:160px">${esc(t.itNote||"-")}</td><td>${t.date}</td></tr>`).join("")}</table>`:'<p class="muted">You have no tickets yet. Click + New ticket to report a problem to the IT department.</p>'}</div></div>`}
+function ticket(){if(ME.staff)return staffTickets();
+  const opt=(arr,v)=>arr.map(x=>`<option ${x===v?"selected":""}>${x}</option>`).join("");
+  $("#view").innerHTML=`<div class="toolbar"><button class="btn" onclick="tkForm()">+ New ticket</button>
+  <select onchange="tkS=this.value;drawTk()">${opt(["Active","Open","In Progress","Resolved","All"],tkS)}</select>
+  <select onchange="tkP=this.value;drawTk()">${opt(["All","High","Medium","Low"],tkP)}</select>
+  <select onchange="tkC=this.value;drawTk()">${opt(["All",...TCATS],tkC)}</select>
+  <input placeholder="Search tickets..." style="max-width:220px" value="${esc(tkQ)}" oninput="tkQ=this.value;drawTk()">
+  <button class="btn ghost" onclick="tkExport()">Export CSV</button></div><div class="card"><div class="wrap" id="tkt"></div></div>`;
+  drawTk();
+}
+function drawTk(){const e=$("#tkt");if(e)e.innerHTML=ticketTable(tkRows(),true)}
+function tkForm(){modal(`<h3>New ticket</h3>
+  <label>Company</label><select id="tc">${ME.staff&&ME.company?`<option>${esc(ME.company)}</option>`:coOpts(ME.company||(co==="All"?COMPANIES[0]:co))}</select>
+  <label>Category</label><select id="tcat">${TCATS.map(c=>`<option>${c}</option>`).join("")}</select><label>Title</label><input id="tt"><label>Description</label><textarea id="td" rows="3"></textarea>
+  <label>Priority</label><select id="tp"><option>Low</option><option selected>Medium</option><option>High</option></select>
+  ${ME.staff?"":`<label>Requested by</label><input id="tb"><label>Assigned to</label><input id="ta">`}
+  <div class="err" id="terr"></div><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="tkSave()">Create ticket</button></div>`)}
+async function tkSave(){const title=$("#tt").value.trim();if(!title){$("#terr").textContent="Title is required.";return}
+  const id=DBH?"k"+Date.now().toString(36)+Math.random().toString(36).slice(2,4):db.tickets.reduce((m,x)=>Math.max(m,+x.id||0),1000)+1;
+  const t={id,no:DBH?id.slice(1,6).toUpperCase():id,company:$("#tc").value,title,desc:$("#td").value.trim(),category:$("#tcat")?$("#tcat").value:"Other",priority:$("#tp").value,status:"Open",by:ME.staff?(ME.name||"Staff"):($("#tb")?$("#tb").value.trim()||"-":"-"),assigned:$("#ta")?$("#ta").value.trim():"",date:today(),requesterId:ME.id||""};
+  closeModal();await dPut("tickets",t);toast("Ticket created")}
+function tkStatus(id,v){const t={...byId(db.tickets,id)};t.status=v;if(v==="Resolved"){t.resolved=today();t.resolvedBy=ME.name||"";}else{delete t.resolved;delete t.resolvedBy}dPut("tickets",t)}
+function tkDel(id){ask("Delete this ticket?",()=>dDel("tickets",id))}
+function tkExport(){saveFile("tickets-"+today()+".csv",toCsv([["ID","Company","Title","Description","Priority","Status","Requested by","Assigned to","Date"],...tkRows().map(t=>[t.no||t.id,t.company,t.title,t.desc||"",t.priority,t.status,t.by,t.assigned||"",t.date])]))}
+
+/* INVENTORY */
+const catOptsFor=(company,sel)=>db.cats.filter(c=>c.company===company).map(c=>`<option value="${c.id}" ${c.id===sel?"selected":""}>${esc(c.name)}</option>`).join("")||'<option value="">(no category yet - add one first)</option>';
+const catName=id=>(db.cats.find(c=>c.id===id)||{}).name||"-";
+let catSel=null,showPw=false,shQ="",askFn=null;
+const SENS=/pass|key|anydesk|ammyy|licen|pwd/i,HDW=/user|host|pass|address|model|brand|location|serial|name|descr|item|status|port|processor|ram\b|monitor|printer|company|cam|nvr|\bip\b|mac|date|ssid|board|system|key|application|avr|ups|supplier|storage|hdd|ssd|cpu|resolution|compression|condition|quantity|remarks|display|build|purchase|type|size|unit|group|disk|license|licence|anydesk|ammyy|psu|power|access|app\b|link|account|plan|bill|installed|ink/i;
+const rowN=b=>b.rows.filter(r=>r.some(Boolean)).length;
+function invCount(){return blocks.filter(b=>co==="All"||b.company===co).reduce((n,b)=>n+rowN(b),0)}
+function pickCo(i){co=i<0?"All":COMPANIES[i];catSel=null;shQ="";$("#company").value=co;render()}
+function catsOf(c){const m=new Map();blocks.filter(b=>b.company===c).forEach(b=>m.set(b.cat,(m.get(b.cat)||0)+rowN(b)));return [...m]}
+function ask(msg,fn){askFn=fn;modal(`<h3>${esc(msg)}</h3><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn danger" onclick="closeModal();askFn&&askFn()">Delete</button></div>`)}
+let viewMode=store.get("itd_view","cards"),invReady=true;
+const ICO=[[/spare|stored|disposal|clone/i,"\u{1F9F0}"],[/laptop/i,"\u{1F4BB}"],[/desktop|pc|computer|monitor/i,"\u{1F5A5}\uFE0F"],[/printer|projector/i,"\u{1F5A8}\uFE0F"],[/cctv|nvr|camera/i,"\u{1F4F9}"],[/server|nas/i,"\u{1F5C4}\uFE0F"],[/network|switch|access point|router|antenna|isp/i,"\u{1F4E1}"],[/ups|avr|power/i,"\u{1F50C}"],[/licen/i,"\u{1F511}"],[/login|account/i,"\u{1F510}"],[/gps/i,"\u{1F4CD}"],[/tool|cabinet/i,"\u{1F6E0}\uFE0F"],[/note|guide/i,"\u{1F4DD}"]];
+const ico=c=>(ICO.find(x=>x[0].test(c))||[0,"\u{1F4C1}"])[1];
+const GRP=[["Computers & devices",/pc|laptop|desktop|computer|monitor|printer|projector/i],["Network & CCTV",/network|switch|access point|router|antenna|cctv|nvr|camera|isp|cabinet|server|nas$/i],["Power",/ups|avr|power/i],["Accounts & software",/licen|login|account|remote/i]];
+const grpOf=c=>/spare|stored|disposal|clone/i.test(c)?"Spare & storage":(GRP.find(g=>g[1].test(c))||["Other"])[0];
+function inventory(){
+  if(co==="All"){
+    $("#view").innerHTML=`<p class="muted">Pumili muna ng company para makita ang mga gamit nito.</p><div class="grid">${COMPANIES.map((c,i)=>{const cs=catsOf(c);return `<button class="card stat" style="cursor:pointer;text-align:left;border-left-color:${CCOL[c]}" onclick="pickCo(${i})"><b style="font-size:16px">${esc(c)}</b><span>${cs.length} categories &middot; ${cs.reduce((n,x)=>n+x[1],0)} rows</span></button>`}).join("")}</div>`;
+    return;
+  }
+  const cats=catsOf(co);
+  if(catSel&&!cats.some(x=>x[0]===catSel))catSel=null;
+  if(!blocks.length&&!invReady){$("#view").innerHTML='<p class="muted">Loading inventory...</p>';return}
+  if(!catSel){
+    const order=["Computers & devices","Network & CCTV","Power","Spare & storage","Accounts & software","Other"];
+    $("#view").innerHTML=`<div class="toolbar"><button class="btn ghost" onclick="pickCo(-1)">&larr; All companies</button><button class="btn" onclick="addCatForm()">+ Add Category</button></div><div class="crumb"><b>${esc(co)}</b><span class="muted">Choose a category to see the items inside.</span></div>`+
+    order.map(g=>{const cs=cats.filter(x=>grpOf(x[0])===g);return cs.length?`<h3 class="grp">${g}</h3><div class="tiles">${cs.map(([c,n])=>`<button class="tile" data-c="${esc(c)}" onclick="catSel=this.dataset.c;shQ='';inventory()"><span class="ti">${ico(c)}</span><b>${esc(c)}</b><span class="muted">${n} item${n===1?"":"s"}</span></button>`).join("")}</div>`:""}).join("")||'<p class="muted">The inventory is empty. Click + Add Category to start adding items.</p>';
+    return;
+  }
+  const hasHdr=blocks.some(b=>b.company===co&&b.cat===catSel&&b.header);
+  $("#view").innerHTML=`<div class="crumb"><button class="btn ghost sm" onclick="catSel=null;shQ='';inventory()">&larr; ${esc(co)}</button><b>${ico(catSel)} ${esc(catSel)}</b><select style="width:auto" onchange="catSel=this.value;shQ='';inventory()">${cats.map(([c,n])=>`<option value="${esc(c)}" ${c===catSel?"selected":""}>${esc(c)} (${n})</option>`).join("")}</select></div>
+  <div class="toolbar"><input id="shq" style="max-width:260px" placeholder="Search in ${esc(catSel)}..." value="${esc(shQ)}" oninput="shQ=this.value;drawSheet()"><div class="seg"><button class="${viewMode==="cards"?"on":""}" onclick="setView('cards')">Cards</button><button class="${viewMode==="table"?"on":""}" onclick="setView('table')">Table</button></div>${hasHdr?'<button class="btn" onclick="itemAdd()">+ Add item</button>':""}<button class="btn ghost" onclick="exportCat()">Export CSV</button>${viewMode==="table"?`<label style="display:flex;gap:6px;align-items:center;margin:0 4px;color:var(--text);font-size:13px"><input type="checkbox" style="width:auto" ${showPw?"checked":""} onchange="showPw=this.checked;drawSheet()"> Show passwords / keys</label>`:""}</div>
+  <p class="muted" style="margin:-4px 0 12px;font-size:13px">${viewMode==="cards"?"Click a card to see all details, copy values, or edit. Use Table view to edit many cells quickly.":"Click any cell to edit it. Use + to add a row below and \u00d7 to delete."}</p><div id="sheet"></div>`;
+  drawSheet();
+}
+function setView(v){viewMode=v;store.set("itd_view",v);inventory()}
+function drawSheet(){
+  let html=viewMode==="table"?tableHtml():cardsHtml()+tableHtml(b=>!b.header);
+  $("#sheet").innerHTML=html||'<p class="muted">Nothing found.</p>';
+}
+const shortL=s=>{s=String(s||"").replace(/[:.]+$/,"").trim();return s.length>16?s.slice(0,15)+"\u2026":s};
+const fx=(H,re)=>H.findIndex(x=>re.test(x||""));
+const bLabel=b=>b.cat+" - "+b.sheet+(b.site?" \u00b7 "+b.site:"");
+function cardsHtml(){
+  const q=shQ.toLowerCase();let out="";
+  blocks.filter(b=>b.company===co&&b.cat===catSel&&b.header).forEach(b=>{
+    const sens=b.header.map(c=>SENS.test(c||""));
+    const it=b.rows.map((r,i)=>({r,i})).filter(({r})=>r.filter(Boolean).length>=2&&(!q||r.some((c,k)=>c&&!sens[k]&&c.toLowerCase().includes(q))));
+    if(!it.length)return;
+    out+=`<h3 class="grp">${esc(bLabel(b))} (${it.length})</h3><div class="cards">${it.slice(0,300).map(({r,i})=>{
+      const H=b.header,hid=hidCols(b);let t=fx(H,/host|computer name|laptop name|item desc|^name|model|brand|description|device/i);if(t<0||!r[t])t=r.findIndex((c,k)=>c&&!sens[k]&&!hid.has(k));
+      let s=fx(H,/^user|assigned|used by|location/i);if(s===t||s<0||!r[s])s=-1;
+      const ch=[];for(let k=0;k<H.length&&ch.length<4;k++){if(k===t||k===s||!r[k]||sens[k]||!H[k]||hid.has(k))continue;ch.push(`<span><em>${esc(shortL(H[k]))}</em>${esc(r[k])}</span>`)}
+      return `<div class="rcard" onclick="recOpen(${b.id},${i})"><b>${esc(r[t]||"(no name)")}</b>${s>=0?`<div class="muted">${esc(r[s])}</div>`:""}<div class="chips">${ch.join("")}</div></div>`}).join("")}</div>`;
+  });
+  return out;
+}
+function recOpen(bid,i){
+  const b=blk(bid),r=b.rows[i],H=b.header,hid=hidCols(b);
+  modal(`<h3>Item details</h3><p class="muted" style="margin:0 0 8px">${esc(bLabel(b))}</p>`+H.map((h,k)=>(h||r[k])&&r[k]&&!hid.has(k)?`<div class="kv"><span class="muted">${esc(h||"Column "+(k+1))}</span><div class="v" id="rv${k}" data-v="${esc(r[k])}" data-m="${SENS.test(h||"")?1:0}">${SENS.test(h||"")?"\u2022\u2022\u2022\u2022\u2022\u2022":esc(r[k])}</div><div style="white-space:nowrap">${SENS.test(h||"")?`<a class="lnk" onclick="rvShow(${k})">Show</a> `:""}<a class="lnk" onclick="copyTxt($('#rv${k}').dataset.v)">Copy</a></div></div>`:"").join("")+
+  `<div class="actions"><button class="btn ghost" style="color:var(--bad)" onclick="recDel(${bid},${i})">Delete</button><button class="btn ghost" onclick="recForm(${bid},${i})">Edit</button><button class="btn" onclick="closeModal()">Close</button></div>`);
+  $("#modal .card").style.maxWidth="620px";
+}
+function rvShow(k){const e=$("#rv"+k);e.textContent=e.dataset.m==="1"&&e.textContent.startsWith("\u2022")?e.dataset.v:"\u2022\u2022\u2022\u2022\u2022\u2022";if(e.textContent.startsWith("\u2022"))e.dataset.m="1"}
+function itemAdd(){
+  const c=blocks.filter(b=>b.company===co&&b.cat===catSel&&b.header);if(!c.length){toast("Use Table view for this category");return}
+  if(c.length===1)return recForm(c[0].id,-1);
+  modal(`<h3>Add item</h3><label>Add to</label><select id="rfb">${c.map(x=>`<option value="${x.id}">${esc(bLabel(x))}</option>`).join("")}</select><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="recForm(+$('#rfb').value,-1)">Continue</button></div>`)
+}
+function recForm(bid,i){
+  const b=blk(bid),r=i>=0?b.rows[i]:[];
+  modal(`<h3>${i>=0?"Edit item":"Add item"}</h3><p class="muted" style="margin:0">${esc(bLabel(b))}</p>`+b.header.map((h,k)=>h&&!hidCols(b).has(k)?`<label>${esc(h)}</label><input data-k="${k}" value="${esc(r[k]||"")}">`:"").join("")+`<div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="recSave(${bid},${i})">Save</button></div>`);
+  $("#modal .card").style.maxWidth="560px";
+}
+function recSave(bid,i){
+  const b=blk(bid),row=i>=0?b.rows[i].slice():[];
+  document.querySelectorAll("#modal input[data-k]").forEach(e=>{const k=+e.dataset.k;while(row.length<=k)row.push("");row[k]=e.value.trim()});
+  if(!row.some(Boolean)){toast("Fill in at least one field");return}
+  if(i>=0)b.rows[i]=row;else b.rows.push(row);
+  saveBlocks(b);closeModal();inventory();toast("Saved");
+}
+function recDel(bid,i){ask("Delete this item?",()=>{const b=blk(bid);b.rows.splice(i,1);saveBlocks(b);inventory()})}
+const hidCols=b=>new Set((b.header||[]).map((x,i)=>/^\s*desktop pc\s*$/i.test(x||"")?i:-1).filter(i=>i>=0));
+function tdc(b,i,c,v,sens,hd){if(hidCols(b).has(c))return "";
+  if(!hd&&sens&&!showPw&&v)return `<td class="mask" data-v="${esc(v)}" onclick="this.textContent=this.dataset.v;this.classList.remove('mask')">&bull;&bull;&bull;&bull;&bull;&bull;</td>`;
+  return `<td contenteditable="true" data-b="${b.id}" data-r="${i}" data-c="${c}" onblur="setCell(this)">${esc(v)}</td>`;
+}
+function tableHtml(pred){
+  const q=shQ.toLowerCase();let html="";
+  blocks.filter(b=>b.company===co&&b.cat===catSel&&(!pred||pred(b))).forEach(b=>{
+    const cols=Math.max(1,(b.header||[]).length,...b.rows.map(r=>r.length));
+    let sens=(b.header||[]).map(c=>SENS.test(c||"")),out="";
+    if(b.header&&!q){let t="";for(let c=0;c<cols;c++)t+=tdc(b,-1,c,b.header[c]||"",false,true);out+=`<tr class="hd">${t}<td class="ra"></td></tr>`}
+    b.rows.forEach((r,i)=>{
+      const ne=r.filter(Boolean).length;if(!ne)return;
+      const single=ne===1,m=r.filter(c=>c&&HDW.test(c)).length;
+      const hdr=!single&&ne>=3&&m>=3&&m/ne>=0.6&&!r.some(c=>/^[\d.\-:\/]+$/.test(c));
+      if(hdr)sens=r.map(c=>SENS.test(c||""));
+      if(q&&!r.some(c=>c&&c.toLowerCase().includes(q)))return;
+      const ra=`<td class="ra"><a class="lnk" onclick="insRow(${b.id},${i})">+</a> <a class="lnk" onclick="delRow(${b.id},${i})">&times;</a></td>`;
+      if(single&&!q){out+=`<tr class="sec"><td colspan="${cols}">${esc(r.find(Boolean))}</td>${ra}</tr>`;return}
+      let t="";for(let c=0;c<cols;c++)t+=tdc(b,i,c,r[c]||"",sens[c],hdr);
+      out+=`<tr class="${hdr?"hd":""}">${t}${ra}</tr>`;
+    });
+    if(q&&!out)return;
+    html+=`<div class="card" style="margin-bottom:16px"><div class="cap">${esc(bLabel(b))}</div><div class="wrap"><table class="sh">${out}</table></div><div style="margin-top:8px"><button class="btn ghost sm" onclick="addRow(${b.id})">+ Add row</button></div></div>`;
+  });
+  return html;
+}
+const blk=id=>blocks.find(x=>x.id===+id);
+function setCell(el){const b=blk(el.dataset.b),r=+el.dataset.r,c=+el.dataset.c,v=el.textContent.trim();const row=r<0?b.header:b.rows[r];while(row.length<=c)row.push("");if(row[c]!==v){row[c]=v;saveBlocks(b)}}
+function addRow(id){blk(id).rows.push([""]);saveBlocks(blk(id));drawSheet()}
+function insRow(id,i){blk(id).rows.splice(i+1,0,[""]);saveBlocks(blk(id));drawSheet()}
+function delRow(id,i){ask("Delete this row?",()=>{const b=blk(id);b.rows.splice(i,1);saveBlocks(b);drawSheet()})}
+function addCatForm(){modal(`<h3>Add Category</h3><p class="muted">${esc(co)}</p><label>Category name</label><input id="acn" placeholder="e.g. UPS, Projector"><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="addCat()">Add</button></div>`)}
+function addCat(){const n=$("#acn").value.trim();if(!n)return;if(!blocks.some(b=>b.company===co&&b.cat===n))blocks.push({id:blocks.reduce((m,b)=>Math.max(m,b.id),0)+1,company:co,cat:n,sheet:"Manual",site:"",header:["Item","User","Details","Serial","Location","Status"],rows:[[""]]});catSel=n;saveBlocks(blocks[blocks.length-1].cat===n?blocks[blocks.length-1]:blocks.find(b=>b.company===co&&b.cat===n));closeModal();inventory()}
+function catForm(id){
+  const r=db.cats.find(x=>x.id===id)||{company:co==="All"?COMPANIES[0]:co,name:""};
+  modal(`<h3>${id?"Edit":"Add"} Category</h3>
+  <label>Company</label><select id="cc">${coOpts(r.company)}</select>
+  <label>Category name</label><input id="cn" value="${esc(r.name)}" placeholder="e.g. Laptops, Network, CCTV">
+  <div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="catSave(${id||0})">Save</button></div>`);
+}
+function catSave(id){
+  const company=$("#cc").value,name=$("#cn").value.trim();
+  if(!name){toast("Category name required");return}
+  if(db.cats.some(c=>c.id!==id&&c.company===company&&c.name.toLowerCase()===name.toLowerCase())){toast("Category already exists for "+company);return}
+  if(id){const c=db.cats.find(x=>x.id===id);c.company=company;c.name=name;db.inventory.forEach(i=>{if(i.catId===id)i.company=company})}
+  else db.cats.push({id:nextId(db.cats.length?db.cats:[{id:0}]),company,name});
+  save();closeModal();inventory();
+}
+function catDel(id){
+  if(db.inventory.some(i=>i.catId===id)){toast("Move or delete the items in this category first");return}
+  if(confirm("Delete this category?")){db.cats=db.cats.filter(c=>c.id!==id);save();inventory()}
+}
+function refreshCats(){$("#ik").innerHTML=catOptsFor($("#ic").value)}
+function invForm(id){
+  const r=db.inventory.find(x=>x.id===id)||{company:co==="All"?COMPANIES[0]:co,catId:0,item:"",serial:"",assigned:"",location:"",details:"",creds:[],status:"In Use"};
+  modal(`<h3>${id?"Edit":"Add"} Item</h3>
+  <label>Company</label><select id="ic" onchange="refreshCats()">${coOpts(r.company)}</select>
+  <label>Category</label><select id="ik">${catOptsFor(r.company,r.catId)}</select>
+  <label>Item</label><input id="ii" value="${esc(r.item)}">
+  <label>Serial</label><input id="is" value="${esc(r.serial)}">
+  <label>Assigned to</label><input id="ia" value="${esc(r.assigned)}">
+  <label>Location</label><input id="il" value="${esc(r.location)}">
+  <label>Status</label><select id="ist">${["In Use","Available","Repair","Retired","For Disposal"].map(t=>`<option ${t===r.status?"selected":""}>${t}</option>`).join("")}</select>
+  <label>Details</label><textarea id="id" rows="3">${esc(r.details)}</textarea>
+  <label>Credentials (one per line, Label: value)</label><textarea id="icr" rows="3">${esc((r.creds||[]).map(p=>p[0]+": "+p[1]).join("\n"))}</textarea>
+  <div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="invSave(${id||0})">Save</button></div>`);
+}
+function invSave(id){
+  const creds=$("#icr").value.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const k=l.indexOf(":");return k<0?["Credential",l]:[l.slice(0,k).trim(),l.slice(k+1).trim()]});
+  const o={company:$("#ic").value,catId:parseInt($("#ik").value)||0,item:$("#ii").value.trim(),serial:$("#is").value.trim(),assigned:$("#ia").value.trim(),location:$("#il").value.trim(),status:$("#ist").value,details:$("#id").value.trim(),creds};
+  if(!o.catId){toast("Add a category for this company first");return}
+  if(!o.item){toast("Item name required");return}
+  if(id)Object.assign(db.inventory.find(x=>x.id===id),o);else db.inventory.push({id:nextId(db.inventory.length?db.inventory:[{id:0}]),...o});
+  save();closeModal();inventory();
+}
+function invDel(id){if(confirm("Delete this item?")){db.inventory=db.inventory.filter(x=>x.id!==id);save();inventory()}}
+
+/* ISP */
+const ISTAT=["Active","Intermittent","Down"],ST_LABEL={Active:"Working",Down:"Disconnected",Intermittent:"Intermittent"},stl=s=>ST_LABEL[s]||s;
+function isp(){
+  const RK={Down:0,Intermittent:1,Active:2},rows=inCo(db.isps).slice().sort((a,b)=>(RK[a.status]??3)-(RK[b.status]??3)||a.company.localeCompare(b.company)||a.name.localeCompare(b.name));
+  $("#view").innerHTML=`${ispAlert(rows)}<div class="toolbar"><button class="btn" onclick="ispForm()">+ Add ISP</button><button class="btn ghost" onclick="ispExport()">Export CSV</button></div>
+  <div class="card"><div class="wrap">${rows.length?`<table><tr><th>Company</th><th>ISP</th><th>Plan</th><th>Monthly bill</th><th>Account Number</th><th>Account Name</th><th>Status</th><th></th></tr>`+rows.map(r=>`<tr class="${r.status==="Down"?"rdown":r.status==="Intermittent"?"rint":"rok"}"><td>${esc(r.company)}</td><td style="white-space:normal;min-width:150px"><a class="lnk" onclick="ispOpen('${r.id}')">${esc(r.name)}</a>${r.site?`<div class="muted">${esc(r.site)}</div>`:""}</td><td style="white-space:normal;min-width:140px">${esc(r.plan||"-")}</td><td>${esc(r.bill||"-")}</td><td>${r.accNo?`${esc(r.accNo)} <a class="lnk" onclick="copyTxt('${String(r.accNo).replace(/'/g,"")}')">Copy</a>`:"-"}</td><td>${esc(r.accName||"-")}</td><td><select class="ss st-${r.status}" onchange="ispStatus('${r.id}',this.value)">${ISTAT.map(s=>`<option value="${s}" ${s===r.status?"selected":""}>${stl(s)}</option>`).join("")}</select></td><td style="white-space:nowrap"><button class="btn ghost sm" onclick="ispOpen('${r.id}')">Details</button> <button class="btn ghost sm" onclick="ispForm('${r.id}')">Edit</button> <button class="btn ghost sm" onclick="ispDel('${r.id}')">Delete</button></td></tr>`).join("")+"</table>":'<p class="muted">No ISP records. Click + Add ISP.</p>'}</div></div>`;
+}
+function ispOpen(id){const r=byId(db.isps,id);if(!r)return;
+  const all=[...[["Company",r.company],["Account number",r.accNo],["Account name",r.accName],["Plan",r.plan],["Monthly bill",r.bill],["Phone",r.phone],["Date installed",r.installed],...(r.details||[])].filter(x=>x[1]).map(x=>[x[0],x[1],0]),...(r.creds||[]).map(x=>[x[0],x[1],1])];
+  modal(`<h3>${esc(r.name)}</h3><p class="muted" style="margin:0 0 8px">${esc(r.site||"")}${r.site?" &middot; ":""}${esc(stl(r.status||""))}</p>`+all.map(([l,v,m],k)=>`<div class="kv"><span class="muted">${esc(l)}</span><div class="v" id="iv${k}" data-v="${esc(v)}">${m?"\u2022\u2022\u2022\u2022\u2022\u2022":esc(v)}</div><div style="white-space:nowrap">${m?`<a class="lnk" onclick="ivShow(${k})">Show</a> `:""}<a class="lnk" onclick="copyTxt($('#iv${k}').dataset.v)">Copy</a></div></div>`).join("")+`<div class="actions"><button class="btn ghost" onclick="ispForm('${r.id}')">Edit</button><button class="btn" onclick="closeModal()">Close</button></div>`);
+  $("#modal .card").style.maxWidth="620px"}
+function ivShow(k){const e=$("#iv"+k),d="\u2022\u2022\u2022\u2022\u2022\u2022";e.textContent=e.textContent===d?e.dataset.v:d}
+function ispAlert(rows){const d=rows.filter(x=>x.status==="Down"),n=rows.filter(x=>x.status==="Intermittent");if(!d.length&&!n.length)return"";
+  const L=(t,a)=>a.length?`<b>${t} (${a.length}):</b> ${a.map(x=>esc(x.company+" - "+x.name+(x.site?" ("+x.site+")":""))).join(", ")}`:"";
+  return `<div class="alert${d.length?"":" warnbox"}">${[L("ISP DISCONNECTED",d),L("Intermittent connection",n)].filter(Boolean).join("<br>")}</div>`}
+function downBanner(){const rows=inCo(db.isps).filter(x=>x.status==="Down"||x.status==="Intermittent");return rows.length?`<div style="cursor:pointer" onclick="go('isp')">${ispAlert(rows)}</div>`:""}
+function ispStatus(id,v){const nr={...byId(db.isps,id),status:v};db.isps=db.isps.map(x=>String(x.id)===String(id)?nr:x);isp();updateBadge();dPut("isps",nr);toast("Status updated")}
+function ispExport(){saveFile("isp-"+today()+".csv",toCsv([["Company","ISP","Site","Plan","Monthly bill","Account Number","Account Name","Status"],...inCo(db.isps).map(r=>[r.company,r.name,r.site||"",r.plan||"",r.bill||"",r.accNo,r.accName,stl(r.status)])]))}
+function ispForm(id){
+  const r=byId(db.isps,id)||{company:co==="All"?COMPANIES[0]:co,name:"",site:"",accNo:"",accName:"",plan:"",bill:"",status:"Active"};
+  modal(`<h3>${id?"Edit":"Add"} ISP</h3>
+  <label>Company</label><select id="pc">${coOpts(r.company)}</select>
+  <label>ISP name</label><input id="pn" value="${esc(r.name)}" placeholder="e.g. PLDT, Globe, Converge">
+  <label>Site / branch (optional)</label><input id="pst" value="${esc(r.site||"")}">
+  <label>Account Number</label><input id="pa" value="${esc(r.accNo||"")}">
+  <label>Account Name</label><input id="pm" value="${esc(r.accName||"")}">
+  <label>Plan</label><input id="ppl" value="${esc(r.plan||"")}">
+  <label>Monthly bill</label><input id="pbl" value="${esc(r.bill||"")}" placeholder="e.g. Php 4,000">
+  <label>Status</label><select id="ps">${ISTAT.map(t=>`<option value="${t}" ${t===r.status?"selected":""}>${stl(t)}</option>`).join("")}</select>
+  <div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="ispSave('${id||""}')">Save</button></div>`);
+}
+async function ispSave(id){
+  const o={company:$("#pc").value,name:$("#pn").value.trim(),site:$("#pst").value.trim(),accNo:$("#pa").value.trim(),accName:$("#pm").value.trim(),plan:$("#ppl").value.trim(),bill:$("#pbl").value.trim(),status:$("#ps").value};
+  if(!o.name){toast("ISP name is required");return}
+  const rec={...(id?byId(db.isps,id):{}),...o,id:id||(DBH?"p"+Date.now().toString(36):db.isps.reduce((m,x)=>Math.max(m,+x.id||0),0)+1)};
+  closeModal();await dPut("isps",rec)}
+function ispDel(id){ask("Delete this ISP record?",()=>dDel("isps",id))}
+
+/* SETTINGS */
+function settings(){
+  const th=store.get("itd_theme","auto");
+  $("#view").innerHTML=`<div class="two"><div class="card"><h3 class="sec">Appearance</h3><label>Theme</label><select id="st"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select><label>Accent color</label><div class="sw">${Object.keys(ACC).map(n=>`<button class="swb ${store.get("itd_accent","Blue")===n?"on":""}" style="background:${ACC[n][0]}" title="${n}" aria-label="${n}" onclick="setAccent('${n}')"></button>`).join("")}</div></div>
+  <div class="card"><h3 class="sec">Backup</h3><p class="muted" style="margin-top:0">Data is saved in this browser. Download a backup before clearing the browser or switching computers.</p><div class="toolbar"><button class="btn" onclick="backup()">Download backup</button><label class="btn ghost" style="margin:0;cursor:pointer">Restore from file<input type="file" accept=".json" id="rf" style="display:none"></label></div></div></div>${ME.mgr?`<div class="card" style="margin-top:14px"><h3 class="sec">User accounts</h3><p class="muted" style="margin-top:0">Create accounts for the IT team and for the staff of each company. Staff can only create and view their own tickets.</p><div id="ulist" class="muted">Loading...</div><div class="toolbar" style="margin:12px 0 0"><button class="btn" onclick="userForm()">+ Add user</button></div></div>`:""}`;
+  $("#st").value=th;if(ME.mgr)loadUsers();
+  $("#st").onchange=e=>{store.set("itd_theme",e.target.value);applyTheme()};
+  $("#rf").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d.blocks||!d.tickets||!d.isps)throw 0;d.tickets.forEach(t=>dPut("tickets",t));d.isps.forEach(i=>dPut("isps",i));blocks=d.blocks;if(DBH)blocks.forEach(b=>saveBlocks(b));else{save();saveBlocks()}toast("Backup restored")}catch(x){toast("That file is not a valid backup")}};rd.readAsText(f)};
+}
+function applyTheme(){const t=store.get("itd_theme","auto");if(t==="auto")document.documentElement.removeAttribute("data-theme");else document.documentElement.setAttribute("data-theme",t);applyAccent()}
+const ACC={Blue:["#1d4ed8","#6f9bff","#0f1b33"],Teal:["#0f6f6a","#2bb3a7","#12202b"],Purple:["#6d28d9","#a78bfa","#1c1433"],Orange:["#c2410c","#fb923c","#2a1a10"],Red:["#b91c1c","#f87171","#2a1212"],Green:["#15803d","#4ade80","#0f2418"],Slate:["#334155","#94a3b8","#0f172a"]};
+function applyAccent(){const n=store.get("itd_accent","Blue"),a=ACC[n]||ACC.Blue,t=store.get("itd_theme","auto"),dark=t==="dark"||(t==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches),s=document.documentElement.style;s.setProperty("--pri",dark?a[1]:a[0]);s.setProperty("--pri-t",dark?"#0b1220":"#fff");s.setProperty("--ink",a[2])}
+function setAccent(n){store.set("itd_accent",n);applyAccent();settings()}
+try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",applyAccent)}catch(e){}
+function backup(){saveFile("it-portal-backup-"+today()+".json",JSON.stringify({version:1,tickets:db.tickets,isps:db.isps,blocks}))}
+function exportCat(){
+  const rows=[];blocks.filter(b=>b.company===co&&b.cat===catSel).forEach(b=>{const sens=(b.header||[]).map(c=>SENS.test(c||""));const m=r=>r.map((c,i)=>!showPw&&sens[i]?"":c);if(b.header)rows.push([b.sheet+(b.site?" - "+b.site:""),...[]].concat([]),m(b.header));b.rows.forEach(r=>rows.push(m(r)));rows.push([])});
+  saveFile((co+"-"+catSel).replace(/[^\w-]+/g,"_")+".csv",toCsv(rows))}
+
+/* MONTHLY REPORT */
+let rpM=today().slice(0,7);
+const mName=m=>new Date(m+"-01T00:00:00").toLocaleString("en",{month:"long",year:"numeric"});
+const dDays=t=>t.date&&t.resolved?(new Date(t.resolved)-new Date(t.date))/864e5:null;
+const dfmt=t=>{const x=dDays(t);return x==null?"-":x<1?"<1 d":x.toFixed(1)+" d"};
+function dailyRes(){const[y,m]=rpM.split("-").map(Number),n=new Date(y,m,0).getDate(),tk=inCo(db.tickets),lab=[],v=[];for(let d=1;d<=n;d++){const k=rpM+"-"+String(d).padStart(2,"0");lab.push(d===1||d%5===0?String(d):"");v.push(tk.filter(t=>t.resolved===k).length)}return colChart(lab,[v],["var(--ok)"],["Tickets resolved"])}
+function rpData(){
+  const all=inCo(db.tickets),mo=t=>(t.date||"").slice(0,7),rm=t=>(t.resolved||"").slice(0,7);
+  const created=all.filter(t=>mo(t)===rpM),resolved=all.filter(t=>rm(t)===rpM);
+  const openEnd=all.filter(t=>mo(t)<=rpM&&!(t.status==="Resolved"&&(!t.resolved||rm(t)<=rpM)));
+  const days=resolved.filter(t=>t.date).map(t=>(new Date(t.resolved)-new Date(t.date))/864e5);
+  const avg=days.length?days.reduce((a,b)=>a+b,0)/days.length:null;
+  const cs=COMPANIES.filter(c=>co==="All"||c===co);
+  const byCo=cs.map(c=>({c,cr:created.filter(t=>t.company===c).length,rs:resolved.filter(t=>t.company===c).length,op:openEnd.filter(t=>t.company===c).length,hi:created.filter(t=>t.company===c&&t.priority==="High").length}));
+  const byPri=["High","Medium","Low"].map(p=>[p,created.filter(t=>t.priority===p).length]);
+  const list=[...new Set([...created,...resolved])].sort((a,b)=>a.id-b.id);
+  const done=resolved.slice().sort((a,b)=>(a.resolved||"").localeCompare(b.resolved||"")),pm={};
+  done.forEach(t=>{const n=t.assigned||t.resolvedBy||"Unassigned";(pm[n]=pm[n]||[]).push(t)});
+  const byPerson=Object.entries(pm).map(([n,a])=>{const ds=a.map(dDays).filter(x=>x!=null);return{n,c:a.length,avg:ds.length?ds.reduce((x,y)=>x+y,0)/ds.length:null}}).sort((a,b)=>b.c-a.c);
+  const isps=inCo(db.isps);
+  const inv=cs.map(c=>({c,n:blocks.filter(b=>b.company===c).reduce((s,b)=>s+rowN(b),0),cats:catsOf(c).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).slice(0,6)}));
+  return {created,resolved,openEnd,avg,byCo,byPri,list,isps,inv,done,byPerson,byCat:TCATS.map(c=>[c,created.filter(t=>(t.category||"Other")===c).length])};
+}
+const rpNote=()=>(store.get("itd_notes",{})[rpM+"|"+co]||"");
+function reports(){
+  const d=rpData(),mx=Math.max(1,...d.byPri.map(x=>x[1]));
+  const st=(n,l)=>`<div class="card stat"><b>${n}</b><span>${l}</span></div>`;
+  $("#view").innerHTML=`<div class="toolbar noprint"><input type="month" id="rpm" value="${rpM}" style="max-width:170px" onchange="rpM=this.value||rpM;reports()"><button class="btn" onclick="copyTxt(rpText())">Copy summary</button><button class="btn ghost" onclick="rpExport()">Export CSV</button><button class="btn ghost" onclick="try{print()}catch(e){toast('Print is not available here')}">Print</button></div>
+  <h2 style="margin:0 0 4px;font-size:18px">${esc(mName(rpM))} &mdash; ${esc(co==="All"?"All companies":co)}</h2><p class="muted" style="margin:0 0 16px">IT Department monthly report</p>
+  <div class="grid">${st(d.created.length,"Tickets created")}${st(d.resolved.length,"Tickets resolved")}${st(d.openEnd.length,"Open at month end")}${st(d.avg==null?"-":d.avg.toFixed(1)+" d","Avg. resolution time")}</div>
+  <div class="two"><div class="card"><h3 class="sec">By company</h3><div class="wrap"><table><tr><th>Company</th><th>Created</th><th>Resolved</th><th>Open</th><th>High</th></tr>${d.byCo.map(r=>`<tr><td>${esc(r.c)}</td><td>${r.cr}</td><td>${r.rs}</td><td>${r.op}</td><td>${r.hi}</td></tr>`).join("")}</table></div></div>
+  <div class="card"><h3 class="sec">Created by priority</h3>${d.byPri.map(([p,n])=>`<div class="brow"><span>${p}</span><div><div class="bar" style="width:${n/mx*100}%"></div></div><b>${n}</b></div>`).join("")}</div></div>
+  <div class="card" style="margin-bottom:16px"><h3 class="sec">Created by category</h3>${hbars(d.byCat)}</div>
+  <div class="two"><div class="card"><h3 class="sec">Tickets created per day</h3>${dailyChart()}</div><div class="card"><h3 class="sec">${co==="All"?"Inventory by company":"Inventory by category"}</h3>${hbars(invBars())}</div></div>
+  <div class="card" style="margin-bottom:16px"><h3 class="sec">Tickets accomplished (${d.done.length})</h3>${d.done.length?`<div class="two" style="margin-bottom:14px"><div class="wrap"><table><tr><th>Resolved by</th><th>Tickets</th><th>Avg. time</th></tr>${d.byPerson.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.c}</td><td>${r.avg==null?"-":r.avg<1?"<1 d":r.avg.toFixed(1)+" d"}</td></tr>`).join("")}</table></div><div>${dailyRes()}</div></div><div class="wrap"><table><tr><th>#</th><th>Company</th><th>Title</th><th>Priority</th><th>Resolved by</th><th>Created</th><th>Resolved</th><th>Time taken</th></tr>${d.done.map(t=>`<tr><td>${esc(t.no||t.id)}</td><td>${esc(t.company)}</td><td style="white-space:normal;min-width:180px">${esc(t.title)}</td><td><span class="pill ${cls(t.priority)}">${t.priority}</span></td><td>${esc(t.assigned||t.resolvedBy||"-")}</td><td>${t.date}</td><td>${t.resolved}</td><td>${dfmt(t)}</td></tr>`).join("")}</table></div>`:'<p class="muted" style="margin:0">No tickets were resolved this month.</p>'}</div>
+  <div class="card" style="margin-bottom:16px"><h3 class="sec">Tickets this month</h3><div class="wrap">${d.list.length?`<table><tr><th>#</th><th>Company</th><th>Title</th><th>Priority</th><th>Status</th><th>Created</th><th>Resolved</th></tr>${d.list.map(t=>`<tr><td>${esc(t.no||t.id)}</td><td>${esc(t.company)}</td><td style="white-space:normal;min-width:180px">${esc(t.title)}</td><td><span class="pill ${cls(t.priority)}">${t.priority}</span></td><td><span class="pill ${cls(t.status)}">${t.status}</span></td><td>${t.date}</td><td>${t.resolved||"-"}</td></tr>`).join("")}</table>`:'<p class="muted">No tickets created or resolved this month.</p>'}</div></div>
+  <div class="two"><div class="card"><h3 class="sec">ISP status (current)</h3>${d.isps.length?d.isps.map(i=>`<div class="att" style="cursor:default"><span class="pill ${cls(i.status)}">${stl(i.status)}</span><div>${esc(i.name)} <span class="muted">&middot; ${esc(i.company)} &middot; ${esc(i.accNo)}</span></div></div>`).join(""):'<p class="muted" style="margin:0">No ISP records.</p>'}</div>
+  <div class="card"><h3 class="sec">Inventory snapshot (current)</h3>${d.inv.map(r=>`<div style="margin-bottom:10px"><b>${esc(r.c)}</b> <span class="muted">${r.n} rows</span><div class="muted" style="font-size:13px">${r.cats.map(x=>esc(x[0])+" "+x[1]).join(" &middot; ")||"-"}</div></div>`).join("")}</div></div>
+  <div class="card"><h3 class="sec">Notes and highlights</h3><textarea id="rpn" rows="4" placeholder="Major work done, issues, purchases, plans for next month..." oninput="rpSaveNote(this.value)">${esc(rpNote())}</textarea></div>`;
+}
+function rpSaveNote(v){const n=store.get("itd_notes",{});n[rpM+"|"+co]=v;store.set("itd_notes",n)}
+function rpText(){
+  const d=rpData(),L=[`IT Department Monthly Report - ${mName(rpM)} (${co==="All"?"All companies":co})`,"",`Tickets: ${d.created.length} created, ${d.resolved.length} resolved, ${d.openEnd.length} open at month end`+(d.avg==null?"":`, avg resolution ${d.avg.toFixed(1)} days`),"","By company:",...d.byCo.map(r=>`- ${r.c}: ${r.cr} created, ${r.rs} resolved, ${r.op} open, ${r.hi} high priority`),"",`Accomplished tickets (${d.done.length}):`,...(d.done.length?d.byPerson.map(r=>`- ${r.n}: ${r.c} resolved`+(r.avg==null?"":` (avg ${r.avg.toFixed(1)} days)`)):["- none"]),...d.done.slice(0,15).map(t=>`  * #${t.no||t.id} ${t.title} (${t.company}, resolved ${t.resolved}, ${dfmt(t)})`),"","By category:",...d.byCat.filter(x=>x[1]).map(x=>`- ${x[0]}: ${x[1]}`),"","ISP status (current):",...(d.isps.length?d.isps.map(i=>`- ${i.company}: ${i.name} (${i.accNo}) - ${stl(i.status)}`):["- none"]),"","Inventory (current rows):",...d.inv.map(r=>`- ${r.c}: ${r.n}`)];
+  const n=rpNote();if(n)L.push("","Notes:",n);return L.join("\n")}
+function rpExport(){
+  const d=rpData(),n=rpNote();
+  saveFile(`it-report-${rpM}.csv`,toCsv([["IT Department Monthly Report",mName(rpM),co==="All"?"All companies":co],[],["Created",d.created.length],["Resolved",d.resolved.length],["Open at month end",d.openEnd.length],["Avg resolution (days)",d.avg==null?"":d.avg.toFixed(1)],[],["Company","Created","Resolved","Open","High"],...d.byCo.map(r=>[r.c,r.cr,r.rs,r.op,r.hi]),[],["ID","Company","Title","Priority","Status","Created","Resolved"],...d.list.map(t=>[t.no||t.id,t.company,t.title,t.priority,t.status,t.date,t.resolved||""]),[],["Accomplished tickets"],["ID","Company","Title","Priority","Resolved by","Created","Resolved","Days to resolve"],...d.done.map(t=>[t.no||t.id,t.company,t.title,t.priority,t.assigned||t.resolvedBy||"",t.date,t.resolved,dDays(t)==null?"":dDays(t).toFixed(1)]),[],["Resolved by","Tickets","Avg days"],...d.byPerson.map(r=>[r.n,r.c,r.avg==null?"":r.avg.toFixed(1)]),[],["ISP","Company","Account","Status"],...d.isps.map(i=>[i.name,i.company,i.accNo,stl(i.status)]),...(n?[[],["Notes",n]]:[])]))}
+async function dPut(col,o){try{if(DBH){const{id,...d}=o;await DBH.collection(col).doc(String(id)).set(d)}else{const a=db[col],i=a.findIndex(x=>String(x.id)===String(o.id));if(i<0)a.push(o);else a[i]=o;save();render()}}catch(e){toast("You do not have permission to do that")}}
+async function dDel(col,id){try{if(DBH)await DBH.collection(col).doc(String(id)).delete();else{db[col]=db[col].filter(x=>String(x.id)!==String(id));save();render()}}catch(e){toast("You do not have permission to do that")}}
+const byId=(a,id)=>a.find(x=>String(x.id)===String(id));
+/* TASKS (shared via db when available) */
+let TEAM=[];
+let tasks=store.get("itd_tasks",[]),DBH=null,USER=null,ME={id:null,name:"",company:"",canEdit:true,canWrite:true,mgr:true,staff:false},NAMES={},tkView="all",tsQ="",TA={id:null,name:""},saTimer=null;
+const TCOLS=[["Todo","To do"],["In Progress","In progress"],["Done","Done"]];
+const nameOf=t=>t.assigneeId?(NAMES[t.assigneeId]||"Staff member"):(t.assigneeName||"Unassigned");
+const isMine=t=>!!ME.id&&t.assigneeId===ME.id;
+const canChange=t=>ME.canWrite&&(ME.mgr||isMine(t)||!DBH);
+const isOver=t=>t.due&&t.status!=="Done"&&t.due<today();
+async function initShared(){
+  try{
+    if(typeof claude==="undefined")return;
+    USER=await claude.use("user");
+    if(USER){const m=await USER.me();ME.id=m.id||null;ME.name=m.name||"";ME.company=m.company||"";ME.canEdit=!!(m.canEdit||m.isOwner);ME.mgr=!!m.isOwner;const w=await USER.can("data.write");ME.canWrite=w!==false}
+    DBH=await claude.use("db");
+    if(!DBH){ME.canEdit=true;ME.mgr=true;return}
+    ME.staff=!ME.canEdit;db.tickets=[];db.isps=[];tasks=[];blocks=[];
+    document.body.classList.add("shared");document.body.classList.toggle("staff",ME.staff);
+    const T=ME.staff?DBH.collection("tickets").where("requesterId","==",ME.id||"none"):DBH.collection("tickets");
+    T.onSnapshot(s=>{db.tickets=s.docs.map(d=>({...d.data(),id:d.id}));refreshLive()},()=>toast("Could not load tickets"));
+    if(!ME.staff){
+      (async()=>{try{const r=await USER.search("");TEAM=r.map(x=>x.name).filter(Boolean)}catch(e){}})();
+      DBH.collection("monitors").onSnapshot(s=>{mons=s.docs.map(d=>({...d.data(),id:d.id}));refreshLive()},()=>{});
+      monLoad();setInterval(monLoad,10000);
+      DBH.collection("isps").onSnapshot(s=>{db.isps=s.docs.map(d=>({...d.data(),id:d.id}));refreshLive()},()=>{});
+      DBH.collection("tasks").onSnapshot(s=>{tasks=s.docs.map(d=>({...d.data(),id:d.id}));loadNames().then(refreshLive);refreshLive()},()=>toast("Could not load tasks"));
+      invReady=false;DBH.collection("inventory").onSnapshot(s=>{invReady=true;const nb=[];DOCOF={};s.docs.forEach(d=>{const x=d.data();DOCOF[x.company+"|"+x.cat]=d.id;(x.blocks||[]).forEach(b=>nb.push({...JSON.parse(JSON.stringify(b)),company:x.company,cat:x.cat}))});blocks=nb;refreshLive()},()=>toast("Could not load inventory"));
+    }
+    const w=$("#who");if(w)w.textContent=(ME.name||"Signed in")+" \u00b7 "+(ME.mgr?"Manager":ME.staff?"Staff":"IT team");
+    enter(ME.name||"User");
+  }catch(e){}
+}
+async function loadNames(){if(!USER)return;const ids=[...new Set(tasks.flatMap(t=>[t.assigneeId]).filter(Boolean))].filter(i=>!(i in NAMES));if(!ids.length)return;try{const p=await USER.profiles(ids);ids.forEach(i=>{NAMES[i]=(p[i]&&p[i].name)||"Staff member"})}catch(e){}}
+function refreshLive(){const a=document.activeElement;if(!$("#app").classList.contains("hidden")&&$("#modal").classList.contains("hidden")&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))&&true)render()}
+async function tPut(t){try{if(DBH){const{id,...d}=t;await DBH.collection("tasks").doc(id).set(d)}else{const i=tasks.findIndex(x=>x.id===t.id);if(i<0)tasks.push(t);else tasks[i]=t;store.set("itd_tasks",tasks);render()}}catch(e){toast("You do not have permission to change tasks")}}
+async function tRemove(id){try{if(DBH)await DBH.collection("tasks").doc(id).delete();else{tasks=tasks.filter(x=>x.id!==id);store.set("itd_tasks",tasks);render()}}catch(e){toast("You do not have permission to delete tasks")}}
+function tasksPage(){
+  const q=tsQ.toLowerCase(),list=tasks.filter(t=>(co==="All"||t.company===co||t.company==="All")&&(tkView==="all"||isMine(t))&&(!q||[t.title,t.desc,nameOf(t),t.company].join(" ").toLowerCase().includes(q)));
+  const opt=(a,v)=>a.map(([k,l])=>`<option value="${k}" ${k===v?"selected":""}>${l}</option>`).join("");
+  $("#view").innerHTML=`<div class="toolbar">${ME.mgr&&ME.canWrite?'<button class="btn" onclick="taskForm()">+ New task</button>':""}<select onchange="tkView=this.value;tasksPage()">${opt([["all","All tasks"],["mine","My tasks"]],tkView)}</select><input placeholder="Search tasks..." style="max-width:220px" value="${esc(tsQ)}" oninput="tsQ=this.value;tasksBoard()"><button class="btn ghost" onclick="tasksExport()">Export CSV</button></div>${DBH?"":'<p class="muted" style="margin-top:-4px">Shared mode is not available here. Tasks are saved only in this browser.</p>'}<div id="board"></div>`;
+  tasksBoard();
+}
+function tasksBoard(){
+  const q=tsQ.toLowerCase(),list=tasks.filter(t=>(co==="All"||t.company===co||t.company==="All")&&(tkView==="all"||isMine(t))&&(!q||[t.title,t.desc,nameOf(t),t.company].join(" ").toLowerCase().includes(q)));
+  const pr={High:0,Medium:1,Low:2};
+  $("#board").innerHTML=`<div class="board">${TCOLS.map(([k,l])=>{const c=list.filter(t=>t.status===k).sort((a,b)=>(a.due||"9").localeCompare(b.due||"9")||pr[a.priority]-pr[b.priority]);return `<div class="bcol"><h4><span>${l}</span><span>${c.length}</span></h4>${c.map(t=>`<div class="tcard" style="border-left-color:${CCOL[t.company]||"var(--line)"}" onclick="taskOpen('${t.id}')"><b>${esc(t.title)}</b><div class="muted">${esc(nameOf(t))} &middot; ${esc(t.company==="All"?"General":t.company)}</div><div class="mt"><span class="pill ${cls(t.priority)}">${t.priority}</span>${t.due?`<span class="${isOver(t)?"ov":""}">${isOver(t)?"Overdue &middot; ":"Due "}${esc(t.due)}</span>`:""}</div></div>`).join("")||'<p class="muted" style="margin:0;font-size:13px">Nothing here.</p>'}</div>`}).join("")}</div>`;
+}
+function taskOpen(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;const ch=canChange(t);
+  modal(`<h3>${esc(t.title)}</h3><p class="muted" style="margin:0 0 8px">${esc(t.company==="All"?"General":t.company)} &middot; Assigned to ${esc(nameOf(t))}${t.due?" &middot; Due "+esc(t.due):""} &middot; <span class="pill ${cls(t.priority)}">${t.priority}</span></p>
+  ${t.desc?`<p style="white-space:pre-wrap">${esc(t.desc)}</p>`:""}
+  <label>Status</label><select id="tos" ${ch?"":"disabled"}>${TCOLS.map(([k,l])=>`<option value="${k}" ${k===t.status?"selected":""}>${l}</option>`).join("")}</select>
+  <label>Update note</label><textarea id="ton" rows="3" ${ch?"":"disabled"} placeholder="What was done, blockers...">${esc(t.note||"")}</textarea>
+  <div class="actions">${ME.mgr&&ME.canWrite?`<button class="btn ghost danger" style="color:var(--bad)" onclick="taskDel('${t.id}')">Delete</button><button class="btn ghost" onclick="taskForm('${t.id}')">Edit</button>`:""}<button class="btn ghost" onclick="closeModal()">Close</button>${ch?`<button class="btn" onclick="taskSaveStatus('${t.id}')">Save</button>`:""}</div>`);
+}
+async function taskSaveStatus(id){const t={...tasks.find(x=>x.id===id)};t.status=$("#tos").value;t.note=$("#ton").value.trim();t.updatedAt=Date.now();if(t.status==="Done")t.doneAt=t.doneAt||today();else delete t.doneAt;closeModal();await tPut(t);toast("Task updated")}
+function taskDel(id){ask("Delete this task?",async()=>{await tRemove(id);toast("Task deleted")})}
+function taskForm(id){
+  const t=tasks.find(x=>x.id===id)||{title:"",desc:"",company:co==="All"?"All":co,priority:"Medium",due:""};
+  TA={id:t.assigneeId||null,name:t.assigneeId?(NAMES[t.assigneeId]||""):(t.assigneeName||"")};
+  modal(`<h3>${id?"Edit":"New"} task</h3>
+  <label>Task</label><input id="tfi" value="${esc(t.title)}"><label>Details</label><textarea id="tfd" rows="3">${esc(t.desc)}</textarea>
+  <label>Assign to (staff)</label><input id="tfa" value="${esc(TA.name)}" placeholder="Search a name..." oninput="taSearch(this.value)" autocomplete="off"><div id="tsr"></div>
+  <label>Company</label><select id="tfc"><option value="All" ${t.company==="All"?"selected":""}>General (all companies)</option>${coOpts(t.company)}</select>
+  <label>Priority</label><select id="tfp">${["High","Medium","Low"].map(x=>`<option ${x===t.priority?"selected":""}>${x}</option>`).join("")}</select>
+  <label>Due date</label><input id="tfdue" type="date" value="${esc(t.due)}"><div class="err" id="tferr"></div>
+  <div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="taskSave('${id||""}')">Save task</button></div>`);
+}
+function taSearch(v){TA={id:null,name:v};clearTimeout(saTimer);if(!USER||v.trim().length<2){$("#tsr").innerHTML="";return}
+  saTimer=setTimeout(async()=>{try{const r=await USER.search(v.trim());window._tsr=r;$("#tsr").innerHTML=r.length?`<div class="sres">${r.slice(0,6).map((p,i)=>`<div onclick="taPick(${i})">${esc(p.name||"Staff member")}</div>`).join("")}</div>`:""}catch(e){}},250)}
+function taPick(i){const p=window._tsr[i];TA={id:p.id,name:p.name||""};NAMES[p.id]=p.name||NAMES[p.id];$("#tfa").value=TA.name;$("#tsr").innerHTML=""}
+async function taskSave(id){
+  const title=$("#tfi").value.trim();if(!title){$("#tferr").textContent="Task is required.";return}
+  const old=tasks.find(x=>x.id===id)||{};
+  const t={...old,id:id||"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),title,desc:$("#tfd").value.trim(),company:$("#tfc").value,priority:$("#tfp").value,due:$("#tfdue").value,status:old.status||"Todo",createdBy:old.createdBy||ME.id||"",createdAt:old.createdAt||today()};
+  delete t.assigneeId;delete t.assigneeName;
+  if(TA.id)t.assigneeId=TA.id;else if(TA.name.trim())t.assigneeName=TA.name.trim();
+  closeModal();await tPut(t);toast(id?"Task updated":"Task created")
+}
+function tasksExport(){saveFile("tasks-"+today()+".csv",toCsv([["Task","Details","Assigned to","Company","Priority","Due","Status","Note","Created"],...tasks.map(t=>[t.title,t.desc||"",nameOf(t),t.company==="All"?"General":t.company,t.priority,t.due||"",t.status,t.note||"",t.createdAt||""])]))}
+/* USERS + PASSWORD */
+let USERS=[];
+async function loadUsers(){const el=$("#ulist");if(!el)return;try{const r=await fetch("/api/users");USERS=await r.json();el.className="";el.innerHTML=`<div class="wrap"><table><tr><th>Name</th><th>Username</th><th>Role</th><th>Company</th><th></th></tr>${USERS.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.username)}</td><td>${u.role==="manager"?"Manager":u.role==="it"?"IT team":"Staff"}</td><td>${esc(u.company||"-")}</td><td><a class="lnk" onclick="userForm('${u.id}')">Edit / reset password</a> &nbsp; <a class="lnk" onclick="userDel('${u.id}')">Delete</a></td></tr>`).join("")}</table></div>`}catch(e){el.textContent="Could not load users."}}
+function userForm(id){const u=USERS.find(x=>x.id===id)||{name:"",username:"",role:"staff",company:""};
+  modal(`<h3>${id?"Edit":"Add"} user</h3><label>Full name</label><input id="un" value="${esc(u.name)}"><label>Username</label><input id="uu" value="${esc(u.username)}" ${id?"disabled":""} autocomplete="off"><label>${id?"New password (leave blank to keep)":"Password (at least 8 characters)"}</label><input id="up" type="password" autocomplete="new-password">
+  <label>Role</label><select id="ur" onchange="$('#ucw').style.display=this.value==='staff'?'':'none'"><option value="staff" ${u.role==="staff"?"selected":""}>Staff (creates tickets)</option><option value="it" ${u.role==="it"?"selected":""}>IT team</option><option value="manager" ${u.role==="manager"?"selected":""}>Manager</option></select>
+  <div id="ucw" style="${u.role==="staff"?"":"display:none"}"><label>Company</label><select id="uc">${coOpts(u.company||COMPANIES[0])}</select></div><div class="err" id="uerr"></div>
+  <div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="userSave('${id||""}')">Save</button></div>`)}
+async function userSave(id){const role=$("#ur").value,b={name:$("#un").value.trim(),role,company:role==="staff"?$("#uc").value:""};if(!id)b.username=$("#uu").value.trim().toLowerCase();const pw=$("#up").value;if(pw||!id)b.password=pw;
+  try{const r=await fetch(id?"/api/users/"+id:"/api/users",{method:id?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});const d=await r.json().catch(()=>({}));if(!r.ok){$("#uerr").textContent=d.error||"Could not save.";return}closeModal();toast("User saved");loadUsers()}catch(e){$("#uerr").textContent="Cannot reach the server."}}
+function userDel(id){ask("Delete this user?",async()=>{try{const r=await fetch("/api/users/"+id,{method:"DELETE"});const d=await r.json().catch(()=>({}));if(r.ok){toast("User deleted");loadUsers()}else toast(d.error||"Could not delete")}catch(e){toast("Could not delete")}})}
+function pwForm(){modal(`<h3>Change password</h3><label>Current password</label><input id="pw0" type="password" autocomplete="current-password"><label>New password (at least 8 characters)</label><input id="pw1" type="password" autocomplete="new-password"><div class="err" id="pwe"></div><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="pwSave()">Change password</button></div>`)}
+async function pwSave(){try{const r=await fetch("/api/password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({old:$("#pw0").value,new:$("#pw1").value})});const d=await r.json().catch(()=>({}));if(!r.ok){$("#pwe").textContent=d.error||"Could not change.";return}closeModal();toast("Password changed")}catch(e){$("#pwe").textContent="Cannot reach the server."}}
+/* NETWORK MONITORING (self-hosted server checks the targets) */
+let mons=[],MON={status:{},events:[]};
+const MSTATE={up:"Working",intermittent:"Intermittent",down:"Disconnected",checking:"Checking...",paused:"Paused"};
+const spark=h=>`<span class="spark">${(h||[]).map(x=>`<i class="${x?"ok":"bad"}"></i>`).join("")}</span>`;
+function ago(t){if(!t)return"-";const s=Math.floor((Date.now()-t)/1000);return s<60?s+"s ago":s<3600?Math.floor(s/60)+" min ago":s<86400?Math.floor(s/3600)+" h ago":Math.floor(s/86400)+" d ago"}
+async function monLoad(){try{const[a,b]=await Promise.all([fetch("/api/monitor/status"),fetch("/api/monitor/events")]);if(!a.ok)return;MON.status=await a.json();MON.events=await b.json();
+  const n=mons.filter(m=>!m.paused&&["down","intermittent"].includes((MON.status[m.id]||{}).state)).length,bd=$("#monbadge");if(bd){bd.style.display=n?"":"none";bd.textContent=n}
+  if(page==="monitor")monDraw()}catch(e){}}
+function monitorPage(){
+  $("#view").innerHTML=`<div class="toolbar"><button class="btn" onclick="monForm()">+ Add monitor</button><button class="btn ghost" onclick="monSuggest()">Add from ISP data</button></div>
+  <p class="muted" style="margin:-4px 0 12px;font-size:13px">The server checks each target automatically. 3 failed checks in a row = Disconnected. Frequent drops = Intermittent. The ISP status on the ISP page changes by itself.</p>
+  <div class="card" style="margin-bottom:16px">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between">
+      <h3 class="sec" style="margin:0">Network Pulse</h3>
+      <select id="ecgSelect" onchange="drawEcg()" style="max-width:260px;padding:8px">
+        <option value="">Loading monitors...</option>
+      </select>
+      <span id="ecgState" class="muted">Checking connection...</span>
+      <strong id="ecgLatency">Latency: --</strong>
+    </div>
+    <div style="margin-top:12px;background:var(--bg,#101827);border-radius:8px;padding:8px">
+      <svg viewBox="0 0 800 120" preserveAspectRatio="none"
+           style="width:100%;height:130px;display:block">
+        <defs>
+          <pattern id="ecgGrid" width="40" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 24" fill="none"
+                  stroke="currentColor" stroke-opacity=".12" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="800" height="120" fill="url(#ecgGrid)"/>
+        <path id="ecgLine" d="M 0 60 L 800 60" fill="none"
+          stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round"
+          style="stroke-linecap:round;stroke-linejoin:round"/>
+      </svg>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:8px">
+      Animated trace based on recent monitoring results. Latency is in milliseconds (ms), not Mbps.
+    </div>
+    <style>
+      @keyframes ecgFlow {
+        to { stroke-dashoffset: -34; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #ecgLine { animation: none !important; }
+      }
+    </style>
+  </div>
+  <div class="card"><div class="wrap" id="montbl"></div></div><div class="card" style="margin-top:16px"><h3 class="sec">Recent changes</h3><div id="monev"></div></div>`;
+  monDraw();monLoad();
+}
+function drawEcg(){
+  const select=$("#ecgSelect"),line=$("#ecgLine");
+  if(!select||!line)return;
+
+  const previous=select.value;
+  select.innerHTML=mons.map(m=>`<option value="${esc(String(m.id))}">${esc(m.name)} — ${esc(m.company||"")}</option>`).join("");
+  if(mons.some(m=>String(m.id)===previous))select.value=previous;
+
+  const m=mons.find(x=>String(x.id)===select.value);
+  const state=$("#ecgState"),latency=$("#ecgLatency");
+
+  if(!m){
+    line.setAttribute("d","M 0 60 L 800 60");
+    line.setAttribute("stroke","#94a3b8");
+    if(state)state.textContent="No monitor available";
+    if(latency)latency.textContent="Latency: --";
+    return;
+  }
+
+  const s=MON.status[m.id]||{};
+  const st=monState(m);
+
+  // Use real recorded latency samples only. Never copy today's latency
+  // into older history entries.
+  const samples=(Array.isArray(s.pulse)?s.pulse:[])
+    .filter(p=>p&&Number.isFinite(Number(p.t)))
+    .slice(-30);
+
+  const validLatencies=samples
+    .filter(p=>p.ok&&Number.isFinite(Number(p.ms))&&Number(p.ms)>=0)
+    .map(p=>Number(p.ms));
+
+  // Scale the vertical axis to the observed latency range.
+  const maxMs=Math.max(100,...validLatencies)*1.15;
+  const xAt=i=>samples.length<=1?400:i*800/(samples.length-1);
+  const yAt=ms=>100-(Math.min(maxMs,ms)/maxMs)*80;
+
+  const segments=[];
+  let connected=false;
+
+  samples.forEach((p,i)=>{
+    const x=xAt(i);
+
+    // Failed checks break the line; they are not latency measurements.
+    if(!p.ok||!Number.isFinite(Number(p.ms))||Number(p.ms)<0){
+      connected=false;
+      return;
+    }
+
+    const y=yAt(Number(p.ms));
+    segments.push(`${connected?"L":"M"} ${x.toFixed(1)} ${y.toFixed(1)}`);
+    connected=true;
+  });
+
+  line.setAttribute("d",segments.length?segments.join(" "):"M 0 60 L 800 60");
+  line.setAttribute("stroke",st==="down"?"#ef4444":st==="intermittent"?"#f59e0b":st==="up"?"#22c55e":"#94a3b8");
+
+  if(state){
+    const checked=s.lastCheck?new Date(s.lastCheck).toLocaleTimeString():"not recorded";
+    state.textContent=(MSTATE[st]||st)+" · Last check: "+checked;
+  }
+
+  if(latency){
+    latency.textContent="Latency: "+(
+      s.ms!=null&&Number.isFinite(Number(s.ms))
+        ?Number(s.ms)+" ms"
+        :"No successful reading"
+    );
+  }
+}
+function monState(m){return m.paused?"paused":((MON.status[m.id]||{}).state||"checking")}
+function monDraw(){
+  const t=$("#montbl");if(!t)return;
+  const ord={down:0,intermittent:1,checking:2,up:3,paused:4},list=mons.slice().sort((a,b)=>(ord[monState(a)]??5)-(ord[monState(b)]??5)||a.company.localeCompare(b.company)||a.name.localeCompare(b.name));
+  t.innerHTML=list.length?`<table><tr><th>Status</th><th>Name</th><th>Company</th><th>Target</th><th>Last 30 checks</th><th>Delay</th><th>Uptime 24h</th><th>Since</th><th></th></tr>${list.map(m=>{const s=MON.status[m.id]||{},st=monState(m),isp=byId(db.isps,m.isp);return `<tr class="${st==="down"?"rdown":st==="intermittent"?"rint":""}"><td style="white-space:nowrap"><span class="dot ${st}"></span>${st==="checking"&&m.type==="heartbeat"?"Waiting for heartbeat":MSTATE[st]}</td><td style="white-space:normal;min-width:140px">${esc(m.name)}${isp?`<div class="muted">ISP: ${esc(isp.name)}${m.auto===false?" (no auto status)":""}</div>`:""}</td><td>${esc(m.company||"-")}</td><td>${m.type==="heartbeat"?"MikroTik heartbeat (every "+esc(m.intervalSec||60)+"s)":esc(m.type)+" "+esc(m.host)+(m.type==="tcp"?":"+esc(m.port):"")}</td><td>${spark(s.hist)}</td><td>${s.ms!=null?s.ms+" ms":"-"}</td><td>${s.uptime!=null?s.uptime+"%":"-"}</td><td>${ago(s.since)}</td><td style="white-space:nowrap">${m.type==="heartbeat"?`<a class="lnk" onclick="monScript('${m.id}')">Script</a>`:`<a class="lnk" onclick="monRun('${m.id}')">Check now</a>`} &nbsp; <a class="lnk" onclick="monPause('${m.id}')">${m.paused?"Resume":"Pause"}</a> &nbsp; <a class="lnk" onclick="monForm('${m.id}')">Edit</a> &nbsp; <a class="lnk" onclick="monDel('${m.id}')">Delete</a></td></tr>`}).join("")}</table>`:'<p class="muted">No monitors yet. Click + Add monitor, or Add from ISP data.</p>';
+  drawEcg();
+  const ev=$("#monev");if(ev)ev.innerHTML=MON.events.length?MON.events.slice(0,15).map(e=>`<div class="att" style="cursor:default"><span class="dot ${e.to}"></span><div>${esc(e.name)} <span class="muted">&middot; ${esc(e.company)} &middot; ${esc(MSTATE[e.from]||e.from)} &rarr; <b style="color:var(--text)">${esc(MSTATE[e.to]||e.to)}</b> &middot; ${ago(e.ts)}</span></div></div>`).join(""):'<p class="muted" style="margin:0">No changes yet.</p>';
+}
+async function monRun(id){toast("Checking...");try{await fetch("/api/monitor/run/"+id,{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});monLoad()}catch(e){toast("Could not run the check")}}
+function monPause(id){const m=byId(mons,id);dPut("monitors",{...m,paused:!m.paused})}
+function monDel(id){ask("Delete this monitor?",()=>dDel("monitors",id))}
+function ispOptsFor(c,sel){return '<option value="">(none)</option>'+db.isps.filter(i=>i.company===c).map(i=>`<option value="${i.id}" ${String(i.id)===String(sel)?"selected":""}>${esc(i.name+(i.site?" ("+i.site+")":""))}</option>`).join("")}
+function monForm(id){
+  const m=byId(mons,id)||{name:"",company:co==="All"?COMPANIES[0]:co,type:"heartbeat",host:"",port:"",intervalSec:60,auto:true,isp:""};
+  modal(`<h3>${id?"Edit":"Add"} monitor</h3><label>Name</label><input id="mn" value="${esc(m.name)}" placeholder="e.g. Wynsum - Eastern Communication">
+  <label>Company / site</label><select id="mc" onchange="$('#mi').innerHTML=ispOptsFor(this.value,'')">${coOpts(m.company)}</select>
+  <label>Linked ISP (its status will change automatically)</label><select id="mi">${ispOptsFor(m.company,m.isp)}</select>
+  <label>Check type</label><select id="mt" onchange="monType(this.value)"><option value="heartbeat" ${m.type==="heartbeat"?"selected":""}>Heartbeat from MikroTik (recommended)</option><option value="ping" ${m.type==="ping"?"selected":""}>Ping (ICMP)</option><option value="tcp" ${m.type==="tcp"?"selected":""}>TCP port</option><option value="http" ${m.type==="http"?"selected":""}>Web address (HTTP)</option></select>
+  <div id="mhw" style="${m.type==="heartbeat"?"display:none":""}"><label>IP address, hostname or web address</label><input id="mh" value="${esc(m.host)}" placeholder="e.g. 180.232.154.50 or https://example.com"></div><p class="muted" id="mhn" style="font-size:12.5px;${m.type==="heartbeat"?"":"display:none"}">The MikroTik of the site calls the portal every minute. If the calls stop, the site is marked Disconnected. You will get a script to paste in the MikroTik after you save.</p>
+  <div id="mpw" style="${m.type==="tcp"?"":"display:none"}"><label>Port</label><input id="mp" value="${esc(m.port||"")}" placeholder="e.g. 443"></div>
+  <label>Check every (seconds, minimum 15)</label><input id="ms" type="number" min="15" value="${esc(m.intervalSec||60)}">
+  <label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="ma" style="width:auto" ${m.auto!==false?"checked":""}> Change the ISP status automatically</label>
+  <div class="err" id="merr"></div><div class="actions"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="monSave('${id||""}')">Save</button></div>`)}
+function monType(v){$("#mpw").style.display=v==="tcp"?"":"none";$("#mhw").style.display=v==="heartbeat"?"none":"";$("#mhn").style.display=v==="heartbeat"?"":"none"}
+function newToken(){const a=new Uint8Array(16);crypto.getRandomValues(a);return[...a].map(x=>x.toString(16).padStart(2,"0")).join("")}
+function monScript(id){const m=byId(mons,id);if(m)hbModal(m.token,m.intervalSec,m.name)}
+function hbModal(token,sec,name){
+  modal(`<h3>MikroTik heartbeat script</h3><p class="muted" style="margin:0 0 6px">${esc(name||"")}</p><label>Portal address as seen by the MikroTik (use an address the router can reach)</label><input id="hbu" value="${esc(location.origin)}" oninput="hbRefresh('${token}',${+sec||60})"><label>Paste this in the MikroTik: Winbox, New Terminal, then Enter</label><textarea id="hbs" rows="5" readonly onclick="this.select()"></textarea><p class="muted" style="font-size:12.5px">To stop it later: <code>/system scheduler remove portal-heartbeat</code></p><div class="actions"><button class="btn ghost" onclick="closeModal()">Close</button><button class="btn" onclick="copyTxt($('#hbs').value)">Copy script</button></div>`);
+  hbRefresh(token,sec);$("#modal .card").style.maxWidth="660px"}
+function hbRefresh(token,sec){const u=$("#hbu").value.trim().replace(/\/$/,""),s=Math.max(15,+sec||60),iv=s%60===0?(s/60)+"m":s+"s";
+  $("#hbs").value=`/system scheduler add name=portal-heartbeat interval=${iv} comment="Portal heartbeat" on-event="/tool fetch url=\\"${u}/api/heartbeat/${token}\\" keep-result=no"`}
+async function monSave(id){
+  const b={name:$("#mn").value.trim(),company:$("#mc").value,isp:$("#mi").value,type:$("#mt").value,host:$("#mh").value.trim(),port:$("#mp").value.trim(),intervalSec:Math.max(15,+$("#ms").value||60),auto:$("#ma").checked,paused:id?!!(byId(mons,id)||{}).paused:false};
+  if(b.type==="heartbeat"){b.host="";b.port="";b.token=(byId(mons,id)||{}).token||newToken()}
+  if(!b.name||(b.type!=="heartbeat"&&!b.host)){$("#merr").textContent="Name and address are required.";return}
+  if(b.type==="tcp"&&!b.port){$("#merr").textContent="TCP checks need a port.";return}
+  try{await DBH.collection("monitors").doc(id||"m"+Date.now().toString(36)).set(b);closeModal();toast("Monitor saved");if(b.type==="heartbeat"&&!id)hbModal(b.token,b.intervalSec,b.name)}catch(e){$("#merr").textContent="Could not save. Check the address."}
+}
+async function monSuggest(){
+  let n=0;const have=new Set(mons.map(m=>m.host));
+  for(const i of db.isps){const d=(i.details||[]).find(x=>x[0]==="WAN IP");const ip=d&&String(d[1]).match(/\b\d{1,3}(\.\d{1,3}){3}\b/);if(!ip||have.has(ip[0]))continue;have.add(ip[0]);
+    try{await DBH.collection("monitors").doc("m"+Date.now().toString(36)+n).set({name:i.company+" - "+i.name+(i.site?" ("+i.site+")":""),company:i.company,isp:i.id,type:"ping",host:ip[0],port:"",intervalSec:60,auto:true,paused:true});n++}catch(e){}}
+  toast(n?n+" monitor(s) added, paused. Check each address, then press Resume.":"No new ISP WAN IPs to add")}
+/* GLOBAL SEARCH */
+let GSR=[];
+function gsearch(q){q=q.trim().toLowerCase();if(q.length<2)return[];const out=[];
+  blocks.forEach(b=>{const s=(b.header||[]).map(c=>SENS.test(c||""));b.rows.forEach(r=>{if(out.length>=40)return;const v=r.filter((c,i)=>c&&!s[i]);if(v.length>1&&v.join(" ").toLowerCase().includes(q))out.push({t:"Inventory",co:b.company,cat:b.cat,txt:v.slice(0,4).join(" \u00b7 ")})})});
+  db.tickets.forEach(t=>{if([t.title,t.by,t.company,t.assigned].join(" ").toLowerCase().includes(q))out.push({t:"Ticket",co:t.company,txt:"#"+(t.no||t.id)+" "+t.title})});
+  db.isps.forEach(i=>{if([i.name,i.accNo,i.accName,i.company].join(" ").toLowerCase().includes(q))out.push({t:"ISP",co:i.company,txt:i.name+" \u00b7 "+i.accNo})});
+  return out}
+$("#gs").addEventListener("input",e=>{const q=e.target.value,el=$("#gsr");GSR=gsearch(q);el.classList.toggle("hidden",q.trim().length<2);el.innerHTML=GSR.length?GSR.slice(0,14).map((r,i)=>`<div class="gsi" onclick="gsGo(${i})"><span class="pill">${r.t}</span><div><div>${esc(r.txt)}</div><div class="muted">${esc(r.co)}${r.cat?" &middot; "+esc(r.cat):""}</div></div></div>`).join(""):'<div class="gsi muted">No results</div>'});
+function gsGo(i){const r=GSR[i],q=$("#gs").value.trim();$("#gsr").classList.add("hidden");co=COMPANIES.includes(r.co)?r.co:"All";$("#company").value=co;if(r.t==="Inventory"){catSel=r.cat;shQ=q;go("inventory")}else go(r.t==="Ticket"?"ticket":"isp")}
+document.addEventListener("click",e=>{if(!e.target.closest(".gs"))$("#gsr").classList.add("hidden")});
+document.addEventListener("keydown",e=>{if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)&&!document.activeElement.isContentEditable){e.preventDefault();$("#gs").focus()}if(e.key==="Escape")$("#gsr").classList.add("hidden")});
+/* INIT */
+initShared();
+applyTheme();
+
+</script>
+</body>
+</html>
+
+
